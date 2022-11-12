@@ -599,7 +599,7 @@ static void get_pci_address_for_device(GuestPCIAddress *pci,
     }
 }
 
-static GuestPCIAddress *get_empty_pci_address()
+static GuestPCIAddress *get_empty_pci_address(void)
 {
     GuestPCIAddress *pci = NULL;
 
