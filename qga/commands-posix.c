@@ -895,6 +895,7 @@ static bool build_guest_fsinfo_for_pci_dev(char const *syspath,
         g_debug("driver %s",driver);
         return false;
     }
+    g_debug("mypath passed '%s'", syspath);
 
     p = strstr(syspath, "/target");
     if (p && sscanf(p + 7, "%*u:%*u:%*u/%*u:%u:%u:%u",
