@@ -892,6 +892,7 @@ static bool build_guest_fsinfo_for_pci_dev(char const *syspath,
         }
 
         g_debug("unsupported driver or sysfs path '%s'", syspath);
+        g_debug("driver %s",driver);
         return false;
     }
 
