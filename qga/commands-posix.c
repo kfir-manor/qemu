@@ -1077,8 +1077,10 @@ static void build_guest_fsinfo_for_real_device(char const *syspath,
     disk = g_new0(GuestDiskAddress, 1);
     disk->pci_controller = pciaddr;
     disk->bus_type = GUEST_DISK_BUS_TYPE_UNKNOWN;
+    g_debug("syspath '%s'", syspath);
 
 #ifdef CONFIG_LIBUDEV
+    g_debug("config something");
     udev = udev_new();
     udevice = udev_device_new_from_syspath(udev, syspath);
     if (udev == NULL || udevice == NULL) {
@@ -1098,12 +1100,14 @@ static void build_guest_fsinfo_for_real_device(char const *syspath,
     udev_unref(udev);
     udev_device_unref(udevice);
 #endif
-
     if (strstr(syspath, "/devices/pci")) {
+        g_debug("im real pci");
         has_hwinf = build_guest_fsinfo_for_pci_dev(syspath, disk, errp);
     } else if (strstr(syspath, "/devices/css")) {
+        g_debug("im real css");
         has_hwinf = build_guest_fsinfo_for_ccw_dev(syspath, disk, errp);
     } else if (strstr(syspath, "/virtio")) {
+        g_debug("im real virtio");
         has_hwinf = build_guest_fsinfo_for_nonpci_virtio(syspath, disk, errp);
     } else {
         g_debug("Unsupported device type for '%s'", syspath);
