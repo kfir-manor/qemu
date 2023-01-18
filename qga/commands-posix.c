@@ -1219,8 +1219,10 @@ static void build_guest_fsinfo_for_device(char const *devpath,
         return;
     }
     if (is_virtual) {
+            g_debug("  im virtual");
         build_guest_fsinfo_for_virtual_device(syspath, fs, errp);
     } else {
+        g_debug("  im real");
         build_guest_fsinfo_for_real_device(syspath, fs, errp);
     }
 }
