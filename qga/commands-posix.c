@@ -881,6 +881,7 @@ static bool build_guest_fsinfo_for_pci_dev(char const *syspath,
                        g_str_equal(driver, "virtio-pci") ||
                        g_str_equal(driver, "ahci") ||
                        g_str_equal(driver, "nvme") ||
+                       g_str_equal(driver, "xhci_hcd") ||
                        g_str_equal(driver, "ehci-pci"))) {
             break;
         }
@@ -978,7 +979,7 @@ static bool build_guest_fsinfo_for_pci_dev(char const *syspath,
         }
     } else if (strcmp(driver, "nvme") == 0) {
         disk->bus_type = GUEST_DISK_BUS_TYPE_NVME;
-    } else if (strcmp(driver, "ehci-pci") == 0) {
+    } else if (strcmp(driver, "ehci-pci") == 0 || g_str_equal(driver, "xhci_hcd") == 0) {
         disk->bus_type = GUEST_DISK_BUS_TYPE_USB;
     } else {
         g_debug("unknown driver '%s' (sysfs path '%s')", driver, syspath);
