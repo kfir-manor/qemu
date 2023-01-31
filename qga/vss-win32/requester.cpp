@@ -238,7 +238,7 @@ out:
 
 //"VssOption"
 
-DWORD query_dword_from_registry(HKEY hKey, LPCSTR valueName,DWORD defaultData)
+DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
 {
     DWORD data;
     DWORD dataSize = sizeof(DWORD);
@@ -260,8 +260,8 @@ DWORD query_dword_from_registry(HKEY hKey, LPCSTR valueName,DWORD defaultData)
 
 }
 
-DWORD simple_query_reg_dword_value(LPCSTR hKey, LPCSTR subKey,
-                                   LPCSTR valueName,DWORD defaultData)
+DWORD get_reg_dword_value(LPCSTR hKey, LPCSTR subKey, LPCSTR valueName,
+                          DWORD defaultData)
 {
     HKEY hKey;
     DWORD regOpenKeyError;
@@ -272,7 +272,7 @@ DWORD simple_query_reg_dword_value(LPCSTR hKey, LPCSTR subKey,
     if (regOpenKeyError != ERROR_SUCCESS) {
         return defaultData;
     }
-    vssBackupType=query_dword_from_registry(hKey,valueName,defaultData);
+    vssBackupType=query_dword_from_reg(hKey,valueName,defaultData);
     RegCloseKey(hKey)
     return vssBackupType;
 }
@@ -282,13 +282,13 @@ bool valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
     return ( vssBT>VSS_BT_UNDEFINED && vssBT<VSS_BT_OTHER );
 }
 
-VSS_BACKUP_TYPE query_vss_backup_type(defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
+VSS_BACKUP_TYPE get_vss_backup_type(defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
 {
     VSS_BACKUP_TYPE vssBackupType;
 
-    vssBackupType=simple_query_reg_dword_value(HKEY_LOCAL_MACHINE,
-                                               QGA_PROVIDER_REGISTRY_ADDRESS,
-                                               "VssOption");
+    vssBackupType=get_reg_dword_value(HKEY_LOCAL_MACHINE,
+                                      QGA_PROVIDER_REGISTRY_ADDRESS,
+                                      "VssOption");
     
     if (!valid_vss_backup_type(vssBackupType)) {
         return defaultVssBT;
@@ -310,7 +310,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     DWORD wait_status;
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
-    VSS_BACKUP_TYPE vss_bt=query_vss_backup_type();
+    VSS_BACKUP_TYPE vss_bt=get_vss_backup_type();
 
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
