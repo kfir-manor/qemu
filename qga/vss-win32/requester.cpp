@@ -23,6 +23,8 @@
 /* Call QueryStatus every 10 ms while waiting for frozen event */
 #define VSS_TIMEOUT_EVENT_MSEC 10
 
+#define DEFAULT_VSS_BACKUP_TYPE VSS_BT_FULL
+
 #define err_set(e, err, fmt, ...)                                           \
     ((e)->error_setg_win32_wrapper((e)->errp, __FILE__, __LINE__, __func__, \
                                    err, fmt, ## __VA_ARGS__))
@@ -232,6 +234,67 @@ out:
     if (pComponent && info) {
         pComponent->FreeComponentInfo(info);
     }
+}
+
+//"VssOption"
+
+DWORD query_dword_from_registry(HKEY hKey, LPCSTR valueName,DWORD defaultData)
+{
+    DWORD data;
+    DWORD dataSize = sizeof(DWORD);
+    DWORD regQueryValueError;
+    DWORD regType;
+
+    regQueryValueError = RegQueryValueEx(hKey, valueName, 0, &regType,
+                                    (LPBYTE) & data, &dataSize);
+
+    if (regQueryValueError != ERROR_SUCCESS) {
+        return defaultData;
+    }
+
+    if (regType != REG_DWORD) {
+        return defaultData;
+    }
+
+    return data;
+
+}
+
+DWORD simple_query_reg_dword_value(LPCSTR hKey, LPCSTR subKey,
+                                   LPCSTR valueName,DWORD defaultData)
+{
+    HKEY hKey;
+    DWORD regOpenKeyError;
+    VSS_BACKUP_TYPE vssBackupType;
+
+    regOpenKeyError = RegOpenKeyEx(hKey, subKey, 0,
+                                   KEY_READ, &hKey);
+    if (regOpenKeyError != ERROR_SUCCESS) {
+        return defaultData;
+    }
+    vssBackupType=query_dword_from_registry(hKey,valueName,defaultData);
+    RegCloseKey(hKey)
+    return vssBackupType;
+}
+
+bool valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
+{
+    return ( vssBT>VSS_BT_UNDEFINED && vssBT<VSS_BT_OTHER );
+}
+
+VSS_BACKUP_TYPE query_vss_backup_type(defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
+{
+    VSS_BACKUP_TYPE vssBackupType;
+
+    vssBackupType=simple_query_reg_dword_value(HKEY_LOCAL_MACHINE,
+                                               QGA_PROVIDER_REGISTRY_ADDRESS,
+                                               "VssOption");
+    
+    if (!valid_vss_backup_type(vssBackupType)) {
+        return defaultVssBT;
+    }
+
+    return vssBackupType;
 }
 
 void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
