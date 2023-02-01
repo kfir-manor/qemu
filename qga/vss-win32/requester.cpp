@@ -251,11 +251,11 @@ DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
     if (regQueryValueError != ERROR_SUCCESS) {
         return defaultData;
     }
-
+    printf("d\n");
     if (regType != REG_DWORD) {
         return defaultData;
     }
-
+    printf("c\n");
     return data;
 
 }
@@ -273,6 +273,7 @@ DWORD get_reg_dword_value(LPCSTR hKey, LPCSTR subKey, LPCSTR valueName,
         return defaultData;
     }
     vssBackupType=query_dword_from_reg(hKey,valueName,defaultData);
+    printf("%da\n",vssBackupType);
     RegCloseKey(hKey)
     return vssBackupType;
 }
@@ -289,11 +290,10 @@ VSS_BACKUP_TYPE get_vss_backup_type(defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
     vssBackupType=get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                       QGA_PROVIDER_REGISTRY_ADDRESS,
                                       "VssOption");
-    
     if (!valid_vss_backup_type(vssBackupType)) {
         return defaultVssBT;
     }
-
+    printf("%db\n",vssBackupType);
     return vssBackupType;
 }
 
