@@ -265,17 +265,17 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
 {
     HKEY hKey;
     DWORD regOpenKeyError;
-    VSS_BACKUP_TYPE vssBackupType;
+    DWORD dwordData;
 
     regOpenKeyError = RegOpenKeyEx(baseKey, subKey, 0,
                                    KEY_READ, &hKey);
     if (regOpenKeyError != ERROR_SUCCESS) {
         return defaultData;
     }
-    vssBackupType=query_dword_from_reg(hKey,valueName,defaultData);
-    printf("%da\n",vssBackupType);
+    dwordData = query_dword_from_reg(hKey,valueName,defaultData);
+    printf("%da\n",dwordData);
     RegCloseKey(hKey);
-    return vssBackupType;
+    return dwordData;
 }
 
 bool valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
