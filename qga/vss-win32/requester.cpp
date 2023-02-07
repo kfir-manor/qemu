@@ -236,8 +236,6 @@ out:
     }
 }
 
-//"VssOption"
-
 DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
 {
     DWORD data;
@@ -283,7 +281,7 @@ bool valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
     return ( vssBT>VSS_BT_UNDEFINED && vssBT<VSS_BT_OTHER );
 }
 
-VSS_BACKUP_TYPE get_vss_backup_type(DWORD defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
+VSS_BACKUP_TYPE get_vss_backup_type(VSS_BACKUP_TYPE defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
 {
     VSS_BACKUP_TYPE vssBackupType;
 
@@ -291,7 +289,7 @@ VSS_BACKUP_TYPE get_vss_backup_type(DWORD defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
                                       QGA_PROVIDER_REGISTRY_ADDRESS,
                                       "VssOption",defaultVssBT));
     if (!valid_vss_backup_type(vssBackupType)) {
-        return static_cast<VSS_BACKUP_TYPE>(defaultVssBT);
+        return defaultVssBT;
     }
     printf("%db\n",vssBackupType);
     return vssBackupType;
