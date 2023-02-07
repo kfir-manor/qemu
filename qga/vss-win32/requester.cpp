@@ -236,7 +236,7 @@ out:
     }
 }
 
-DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
+DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName, DWORD defaultData)
 {
     DWORD data;
     DWORD dataSize = sizeof(DWORD);
@@ -249,11 +249,9 @@ DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
     if (regQueryValueError != ERROR_SUCCESS) {
         return defaultData;
     }
-    printf("d\n");
     if (regType != REG_DWORD) {
         return defaultData;
     }
-    printf("c\n");
     return data;
 
 }
@@ -270,24 +268,26 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
     if (regOpenKeyError != ERROR_SUCCESS) {
         return defaultData;
     }
-    dwordData = query_dword_from_reg(hKey,valueName,defaultData);
-    printf("%lda\n",dwordData);
+    dwordData = query_dword_from_reg(hKey, valueName, defaultData);
     RegCloseKey(hKey);
     return dwordData;
 }
 
 bool valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
 {
-    return ( vssBT>VSS_BT_UNDEFINED && vssBT<VSS_BT_OTHER );
+    return (vssBT > VSS_BT_UNDEFINED && vssBT < VSS_BT_OTHER);
 }
 
-VSS_BACKUP_TYPE get_vss_backup_type(VSS_BACKUP_TYPE defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
+VSS_BACKUP_TYPE get_vss_backup_type(
+    VSS_BACKUP_TYPE defaultVssBT = DEFAULT_VSS_BACKUP_TYPE)
 {
     VSS_BACKUP_TYPE vssBackupType;
 
-    vssBackupType=static_cast<VSS_BACKUP_TYPE>(get_reg_dword_value(HKEY_LOCAL_MACHINE,
+    vssBackupType = static_cast<VSS_BACKUP_TYPE>(
+                                    get_reg_dword_value(
+                                      HKEY_LOCAL_MACHINE,
                                       QGA_PROVIDER_REGISTRY_ADDRESS,
-                                      "VssOption",defaultVssBT));
+                                      "VssOption", defaultVssBT));
     if (!valid_vss_backup_type(vssBackupType)) {
         return defaultVssBT;
     }
@@ -308,7 +308,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     DWORD wait_status;
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
-    VSS_BACKUP_TYPE vss_bt=get_vss_backup_type();
+    VSS_BACKUP_TYPE vss_bt = get_vss_backup_type();
 
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
