@@ -274,7 +274,7 @@ DWORD get_reg_dword_value(LPCSTR hKey, LPCSTR subKey, LPCSTR valueName,
     }
     vssBackupType=query_dword_from_reg(hKey,valueName,defaultData);
     printf("%da\n",vssBackupType);
-    RegCloseKey(hKey)
+    RegCloseKey(hKey);
     return vssBackupType;
 }
 
