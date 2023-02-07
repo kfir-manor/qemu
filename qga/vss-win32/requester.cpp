@@ -260,14 +260,14 @@ DWORD query_dword_from_reg(HKEY hKey, LPCSTR valueName,DWORD defaultData)
 
 }
 
-DWORD get_reg_dword_value(LPCSTR hKey, LPCSTR subKey, LPCSTR valueName,
+DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)
 {
     HKEY hKey;
     DWORD regOpenKeyError;
     VSS_BACKUP_TYPE vssBackupType;
 
-    regOpenKeyError = RegOpenKeyEx(hKey, subKey, 0,
+    regOpenKeyError = RegOpenKeyEx(baseKey, subKey, 0,
                                    KEY_READ, &hKey);
     if (regOpenKeyError != ERROR_SUCCESS) {
         return defaultData;
