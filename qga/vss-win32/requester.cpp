@@ -287,9 +287,9 @@ VSS_BACKUP_TYPE get_vss_backup_type(DWORD defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
 {
     VSS_BACKUP_TYPE vssBackupType;
 
-    vssBackupType=static_cast<VSS_BACKUP_TYPE> get_reg_dword_value(HKEY_LOCAL_MACHINE,
+    vssBackupType=static_cast<VSS_BACKUP_TYPE>(get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                       QGA_PROVIDER_REGISTRY_ADDRESS,
-                                      "VssOption",defaultVssBT);
+                                      "VssOption",defaultVssBT));
     if (!valid_vss_backup_type(vssBackupType)) {
         return defaultVssBT;
     }
