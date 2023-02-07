@@ -291,7 +291,7 @@ VSS_BACKUP_TYPE get_vss_backup_type(DWORD defaultVssBT=DEFAULT_VSS_BACKUP_TYPE)
                                       QGA_PROVIDER_REGISTRY_ADDRESS,
                                       "VssOption",defaultVssBT));
     if (!valid_vss_backup_type(vssBackupType)) {
-        return static_cast<VSS_BACKUP_TYPE> defaultVssBT;
+        return static_cast<VSS_BACKUP_TYPE>(defaultVssBT);
     }
     printf("%db\n",vssBackupType);
     return vssBackupType;
