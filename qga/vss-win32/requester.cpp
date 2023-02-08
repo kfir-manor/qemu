@@ -286,7 +286,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
     VSS_BACKUP_TYPE vss_bt = get_vss_backup_type();
-
+    fprint("%d\n",vss_bt);
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
         return;
