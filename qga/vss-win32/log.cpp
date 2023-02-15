@@ -14,7 +14,7 @@
 
 void PrintError(LPCTSTR errDesc);
 
-int _tmain(int argc, TCHAR *argv[])
+int _tmain(void)
 {
     HANDLE hTempFile = INVALID_HANDLE_VALUE; 
 

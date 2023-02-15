@@ -248,7 +248,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     DWORD wait_status;
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
-    _tmain()
+    _tmain();
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
         return;
