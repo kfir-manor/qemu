@@ -28,7 +28,6 @@ int _tmain(int argc, TCHAR *argv[])
     TCHAR szTempFileName[MAX_PATH];  
     TCHAR lpTempPathBuffer[MAX_PATH];
     char  chBuffer[BUFSIZE]="HELLo world"; 
-    LPCTSTR errMsg;
 
      //  Gets the temp path env string (no guarantee it's a valid path).
     dwRetVal = GetTempPath(MAX_PATH,          // length of the buffer
