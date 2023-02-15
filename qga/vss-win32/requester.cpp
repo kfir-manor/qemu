@@ -253,7 +253,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         *num_vols = 0;
         return;
     }
-
+    g_debug("gu")
     CoInitialize(NULL);
 
     /* Allow unrestricted access to events */
