@@ -9,107 +9,89 @@
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
+#include "qga/main.cpp"
+
+#define G_LOG_USE_STRUCTURED 
+#include <glib.h>
+
+#include <iostream>
 
 #define BUFSIZE 1024
 
-void PrintError(LPCTSTR errDesc);
+typedef struct LogConfig{
+    char *log_filepath;
+} LogConfig;
 
-int _tmain(void)
-{
-    HANDLE hTempFile = INVALID_HANDLE_VALUE; 
+typedef struct LogState{
+    FILE *log_file;
+/*
+#ifdef _WIN32
+    HANDLE event_log;
+#endif
+} LogState;
+*/
+LogConfig log_config= g_new0(LogConfig, 1);
+GAState *log_state = g_new0(LogState, 1);
 
-    BOOL fSuccess  = FALSE;
+void get_log_file_path(){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
-
-    DWORD dwBytesRead    = 0;
-    DWORD dwBytesWritten = 0; 
-
     TCHAR szTempFileName[MAX_PATH];  
     TCHAR lpTempPathBuffer[MAX_PATH];
-    char  chBuffer[BUFSIZE]="HELLo world"; 
 
-     //  Gets the temp path env string (no guarantee it's a valid path).
-    dwRetVal = GetTempPath(MAX_PATH,          // length of the buffer
-                           lpTempPathBuffer); // buffer for path 
+    dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer); 
     if (dwRetVal > MAX_PATH || (dwRetVal == 0))
     {
-        PrintError(TEXT("GetTempPath failed"));
-        return (2);
+        g_error("GetTempPath failed")
     }
-
-    //  Generates a temporary file name. 
-    uRetVal = GetTempFileName(lpTempPathBuffer, // directory for tmp files
-                              TEXT("DEMO"),     // temp file name prefix 
-                              0,                // create unique name 
-                              szTempFileName);  // buffer for name 
+    uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, szTempFileName);
     if (uRetVal == 0)
     {
-        PrintError(TEXT("GetTempFileName failed"));
-        return (3);
+        g_error("GetTempFileName failed")
     }
-
-    // create file
-    hTempFile = CreateFile((LPTSTR) szTempFileName, // file name 
-                           GENERIC_WRITE,        // open for write 
-                           0,                    // do not share 
-                           NULL,                 // default security 
-                           CREATE_ALWAYS,        // overwrite existing
-                           FILE_ATTRIBUTE_NORMAL,// normal file 
-                           NULL);                // no template 
-    if (hTempFile == INVALID_HANDLE_VALUE) 
-    { 
-        PrintError(TEXT("CreateFile failed"));
-        return (4);
-    } 
-
-    fSuccess = WriteFile(hTempFile, 
-                            chBuffer, 
-                            dwBytesRead,
-                            &dwBytesWritten, 
-                            NULL); 
-    if (!fSuccess) 
-    {
-        PrintError(TEXT("WriteFile failed"));
-        return (5);
-    }
-
-    
-    if (!CloseHandle(hTempFile)) 
-    {
-       PrintError(TEXT("CloseHandle(hTempFile) failed"));
-       return (8);
-    }
-
-    _tprintf(TEXT("All-caps version of %s written to AllCaps.txt\n"), "texe");
-    return (0);
+    return szTempFileName;
 }
 
-//  ErrorMessage support function.
-//  Retrieves the system error message for the GetLastError() code.
-//  Note: caller must use LocalFree() on the returned LPCTSTR buffer.
-LPCTSTR ErrorMessage(DWORD error) 
-{ 
-    LPVOID lpMsgBuf;
-
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER 
-                   | FORMAT_MESSAGE_FROM_SYSTEM 
-                   | FORMAT_MESSAGE_IGNORE_INSERTS,
-                  NULL,
-                  error,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  (LPTSTR) &lpMsgBuf,
-                  0,
-                  NULL);
-
-    return((LPCTSTR)lpMsgBuf);
-}
-
-//  PrintError support function.
-//  Simple wrapper function for error output.
-void PrintError(LPCTSTR errDesc)
+static void vss_log_init()
 {
-        LPCTSTR errMsg = ErrorMessage(GetLastError());
-        _tprintf(TEXT("\n** ERROR ** %s: %s\n"), errDesc, errMsg);
-        LocalFree((LPVOID)errMsg);
+    log_state->log_file = stderr;
+    g_log_set_writer_func(vss_log,log_state);
+/*
+#ifdef _WIN32
+    log_state->event_log = RegisterEventSource(NULL, "qemu-ga-vss");
+    if (!log_state->event_log) {
+        g_autofree gchar *errmsg = g_win32_error_message(GetLastError());
+        g_critical("unable to register event source: %s", errmsg);
+        return NULL;
+    }
+#endif
+*/
+    log_config->log_filepath=get_log_file_path();
+    FILE *log_file = ga_open_logfile(config->log_filepath);
+    if (!log_file) {
+        g_critical("unable to open specified log file: %s",
+                    strerror(errno));
+        return NULL;
+    }
+    log_state->log_file = log_file;
+    return log_state
+}
+static void vss_log_cleanup()
+
+GLogWriterOutput vss_log(GLogLevelFlags log_level, const GLogField* fields,
+                         gsize n_fields, gpointer user_data)
+{
+    const char *log_level_str = ga_log_level_str(log_level);
+    LogConfig *log_config = user_data;
+    level &= G_LOG_LEVEL_MASK;
+/*
+//LEVEL_ERROR = 4
+    if (log_level == LEVEL_ERROR) {
+        system_log(log_config->event_log,log_level,log_level_str,msg);
+        goto out;
+    }
+*/
+    file_log(log_config->log_file,log_level_str,msg);
+out:
+    return G_LOG_WRITER_HANDLED;
 }

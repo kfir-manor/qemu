@@ -346,6 +346,25 @@ static int glib_log_level_to_system(int level)
     }
 }
 
+static void system_log(HANDLE event_log, GLogLevelFlags level,
+                       const char *level_str, const gchar *msg)
+{
+#ifndef _WIN32
+    syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
+#else
+    ReportEvent(event_log, glib_log_level_to_system(level),
+                0, 1, NULL, 1, 0, &msg, NULL);
+#endif
+}
+
+static void file_log(FILE log_file, const char *level_str, const gchar *msg)
+{
+    g_autoptr(GDateTime) now = g_date_time_new_now_utc();
+    g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
+    fprintf(log_file, "%s: %s: %s\n", nowstr, level_str, msg);
+    fflush(log_file);   
+}
+
 static void ga_log(const gchar *domain, GLogLevelFlags level,
                    const gchar *msg, gpointer opaque)
 {
@@ -358,17 +377,9 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
 
     level &= G_LOG_LEVEL_MASK;
     if (g_strcmp0(domain, "syslog") == 0) {
-#ifndef _WIN32
-        syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
-#else
-        ReportEvent(s->event_log, glib_log_level_to_system(level),
-                    0, 1, NULL, 1, 0, &msg, NULL);
-#endif
+        system_log(s->event_log,level,level_str,msg);
     } else if (level & s->log_level) {
-        g_autoptr(GDateTime) now = g_date_time_new_now_utc();
-        g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
-        fprintf(s->log_file, "%s: %s: %s\n", nowstr, level_str, msg);
-        fflush(s->log_file);
+        file_log(s->log_file,level_str,msg);
     }
 }
 
