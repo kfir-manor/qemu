@@ -42,13 +42,15 @@ void get_log_file_path(){
     dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer); 
     if (dwRetVal > MAX_PATH || (dwRetVal == 0))
     {
-        g_error("GetTempPath failed")
+        g_error("GetTempPath failed");
     }
     uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, szTempFileName);
     if (uRetVal == 0)
     {
-        g_error("GetTempFileName failed")
+        g_error("GetTempFileName failed");
     }
+    g_info("log file location: %s",szTempFileName);
+
     return szTempFileName;
 }
 
@@ -74,7 +76,7 @@ static void vss_log_init()
         return NULL;
     }
     log_state->log_file = log_file;
-    return log_state
+    return log_state;
 }
 static void vss_log_cleanup()
 
