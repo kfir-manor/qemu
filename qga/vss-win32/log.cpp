@@ -29,8 +29,8 @@ typedef struct LogState{
 #endif
 } LogState;
 */
-LogConfig log_config= g_new0(LogConfig, 1);
-GAState *log_state = g_new0(LogState, 1);
+static LogConfig log_config= g_new0(LogConfig, 1);
+static GAState *log_state = g_new0(LogState, 1);
 
 void get_log_file_path(){
     DWORD dwRetVal = 0;
