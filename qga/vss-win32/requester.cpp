@@ -87,7 +87,7 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
-
+    vss_log_init();
     return S_OK;
 }
 
@@ -249,6 +249,9 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
     _tmain();
+
+    g_info("freeze start");
+    
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
         return;
@@ -493,6 +496,8 @@ out1:
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
+
+    g_info("thaw start");
 
     if (!vss_ctx.hEventThaw) {
         /*
