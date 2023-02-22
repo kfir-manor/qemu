@@ -35,7 +35,7 @@ const char *set_log_filepath(char * p){
     }
     g_info("log file location: %s",szTempFileName);
 
-    p=szTempFileName;
+    strcpy(p,szTempFileName);
 }
 
 static const char *ga_log_level_str(GLogLevelFlags level)
