@@ -1,6 +1,5 @@
 #include <glib/gstdio.h>
 #include <windows.h>
-#include "qemu/osdep.h"
 #include "log.h"
 
 #define MAX_PATH 1024
