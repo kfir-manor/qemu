@@ -79,3 +79,8 @@ void init_vss_log(){
     }
 }
 
+void cleanup_log(){
+    g_free(log_config);
+    g_free(log_state);
+}
+
