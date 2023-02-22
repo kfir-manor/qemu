@@ -119,3 +119,23 @@ void GLogWriterOutput vss_log(const gchar* log_domain, GLogLevelFlags log_level,
 out:
     return G_LOG_WRITER_HANDLED;
 }
+
+static const char *ga_log_level_str(GLogLevelFlags level)
+{
+    switch (level & G_LOG_LEVEL_MASK) {
+    case G_LOG_LEVEL_ERROR:
+        return "error";
+    case G_LOG_LEVEL_CRITICAL:
+        return "critical";
+    case G_LOG_LEVEL_WARNING:
+        return "warning";
+    case G_LOG_LEVEL_MESSAGE:
+        return "message";
+    case G_LOG_LEVEL_INFO:
+        return "info";
+    case G_LOG_LEVEL_DEBUG:
+        return "debug";
+    default:
+        return "user";
+    }
+}
