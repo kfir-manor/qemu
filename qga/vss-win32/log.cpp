@@ -37,7 +37,7 @@ const char * get_log_filepath(){
     }
     g_info("log file location: %s",szTempFileName);
 
-    return szTempFileName;
+    return *szTempFileName;
 }
 
 void file_log(FILE *log_file,const char *level_str,const gchar* message)
