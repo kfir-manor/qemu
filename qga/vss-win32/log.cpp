@@ -66,7 +66,7 @@ static FILE *open_logfile(const char *logfilepath)
     return f;
 }
 
-void init_vss_log(){
+void init_vss_log(void){
     log_config= g_new0(LogConfig,1);
     log_state= g_new0(LogState,1);
     log_state->log_file = stderr;
@@ -77,7 +77,7 @@ void init_vss_log(){
     }
 }
 
-void cleanup_vss_log(){
+void cleanup_vss_log(void){
     g_free(log_config);
     g_free(log_state);
 }
