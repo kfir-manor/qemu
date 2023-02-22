@@ -102,24 +102,6 @@ static void file_log(FILE log_file, const char *level_str, const gchar *msg)
     fflush(log_file);   
 }
 
-void GLogWriterOutput vss_log(const gchar* log_domain, GLogLevelFlags log_level,
-                              const gchar* message, gpointer user_data)
-{
-    const char *log_level_str = ga_log_level_str(log_level);
-    LogState *log_state = user_data;
-    log_level &= G_LOG_LEVEL_MASK;
-/*
-//LEVEL_ERROR = 4
-    if (log_level == LEVEL_ERROR) {
-        system_log(log_state->event_log,log_level,log_level_str,msg);
-        goto out;
-    }
-*/
-    file_log(log_state->log_file,log_level_str,msg);
-out:
-    return G_LOG_WRITER_HANDLED;
-}
-
 static const char *ga_log_level_str(GLogLevelFlags level)
 {
     switch (level & G_LOG_LEVEL_MASK) {
@@ -138,4 +120,22 @@ static const char *ga_log_level_str(GLogLevelFlags level)
     default:
         return "user";
     }
+}
+
+void GLogFunc vss_log(const gchar* log_domain, GLogLevelFlags log_level,
+                              const gchar* message, gpointer user_data)
+{
+    const char *log_level_str = ga_log_level_str(log_level);
+    LogState *log_state = user_data;
+    log_level &= G_LOG_LEVEL_MASK;
+/*
+//LEVEL_ERROR = 4
+    if (log_level == LEVEL_ERROR) {
+        system_log(log_state->event_log,log_level,log_level_str,msg);
+        goto out;
+    }
+*/
+    file_log(log_state->log_file,log_level_str,msg);
+out:
+    return G_LOG_WRITER_HANDLED;
 }
