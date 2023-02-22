@@ -250,6 +250,8 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
 
+    g_info("start requester_freeze");
+
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
         return;
@@ -503,6 +505,8 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         *num_vols = 0;
         return;
     }
+
+    g_info("start requester_thaw");
 
     /* Tell the provider that the snapshot is finished. */
     SetEvent(vss_ctx.hEventThaw);
