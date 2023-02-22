@@ -7,7 +7,7 @@
 
 
 typedef struct LogConfig{
-    const char log_filepath[MAX_LOG_FILE_PATH];
+    char log_filepath[MAX_LOG_FILE_PATH];
 } LogConfig;
 
 typedef struct LogState{
