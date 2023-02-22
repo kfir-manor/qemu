@@ -107,7 +107,7 @@ GLogWriterOutput vss_log(GLogLevelFlags log_level, const GLogField* fields,
 {
     const char *log_level_str = ga_log_level_str(log_level);
     LogState *log_state = user_data;
-    level &= G_LOG_LEVEL_MASK;
+    log_level &= G_LOG_LEVEL_MASK;
 /*
 //LEVEL_ERROR = 4
     if (log_level == LEVEL_ERROR) {
