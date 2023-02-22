@@ -248,7 +248,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     DWORD wait_status;
     int num_fixed_drives = 0, i;
     int num_mount_points = 0;
-    _tmain();
 
     g_info("freeze start");
     
