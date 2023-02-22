@@ -9,7 +9,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
-#include "main.c"
+#include "qga/main.c"
 
 #define G_LOG_USE_STRUCTURED 
 #include <glib.h>
