@@ -99,11 +99,10 @@ void init_vss_log(void){
     g_log_set_default_handler(vss_log, log_state);
 
     if(!set_log_filepath(log_config->log_filepath)){
-        return NULL;
+        goto out;
     }
-
-    g_info("log file path: %s",log_config->log_filepath);
     log_state->log_file = open_logfile(log_config->log_filepath);
+out:
 }
 
 void cleanup_vss_log(void){
