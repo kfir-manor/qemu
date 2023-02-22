@@ -40,6 +40,26 @@ bool set_log_filepath(const char *p){
     return true;
 }
 
+static const char *ga_log_level_str(GLogLevelFlags level)
+{
+    switch (level & G_LOG_LEVEL_MASK) {
+    case G_LOG_LEVEL_ERROR:
+        return "error";
+    case G_LOG_LEVEL_CRITICAL:
+        return "critical";
+    case G_LOG_LEVEL_WARNING:
+        return "warning";
+    case G_LOG_LEVEL_MESSAGE:
+        return "message";
+    case G_LOG_LEVEL_INFO:
+        return "info";
+    case G_LOG_LEVEL_DEBUG:
+        return "debug";
+    default:
+        return "user";
+    }
+}
+
 void file_log(FILE *log_file,const char *level_str,const gchar* message)
 {
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
@@ -51,7 +71,7 @@ void file_log(FILE *log_file,const char *level_str,const gchar* message)
 void vss_log(const gchar* log_domain, GLogLevelFlags log_level,
                      const gchar* message, gpointer user_data)
 {
-    LogState *log_state = user_data;
+    LogState *log_state = (LogState*)user_data;
     const char *level_str = ga_log_level_str(log_level);
     file_log(log_state->log_file,level_str,message);
 }
