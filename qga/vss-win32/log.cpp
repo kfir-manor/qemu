@@ -97,7 +97,7 @@ void init_vss_log(void){
     g_log_set_default_handler(vss_log, log_state);
 
     if(set_log_filepath(log_config->log_filepath)){
-            FILE *log_file = ga_open_logfile(config->log_filepath);
+            FILE *log_file = ga_open_logfile(log_config->log_filepath);
             if (!log_file) {
                 g_critical("unable to open specified log file: %s",
                            strerror(errno));
