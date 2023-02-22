@@ -85,7 +85,7 @@ static FILE *open_logfile(const char *logfilepath)
         return NULL;
     }
 
-    qemu_set_cloexec(fileno(f));
+    fileno(f);
     return f;
 }
 
