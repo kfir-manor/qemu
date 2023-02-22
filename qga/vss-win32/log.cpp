@@ -17,7 +17,7 @@ typedef struct LogState{
 LogConfig *log_config;
 LogState *log_state;
 
-const char *get_log_filepath(const char *p){
+const char *get_log_filepath(){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
     TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
@@ -92,7 +92,7 @@ void init_vss_log(void){
     log_state= g_new0(LogState,1);
     log_state->log_file = stderr;
     g_log_set_default_handler(vss_log, log_state);
-    log_config->log_filepath=get_log_filepath(log_config->log_filepath);
+    sprintf(log_config->log_filepath,get_log_filepath());
     if(log_config->log_filepath!=nullptr){
         g_info("log file path: %s",log_config->log_filepath);
         log_state->log_file = open_logfile(log_config->log_filepath);
