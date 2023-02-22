@@ -17,7 +17,7 @@ typedef struct LogState{
 LogConfig *log_config;
 LogState *log_state;
 
-bool set_log_filepath(const char *p){
+const char *gey_log_filepath(const char *p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
     TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
@@ -27,17 +27,15 @@ bool set_log_filepath(const char *p){
     if (dwRetVal > MAX_LOG_FILE_PATH || (dwRetVal == 0))
     {
         g_error("GetTempPath failed");
-        return false;
     }
     uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, szTempFileName);
     if (uRetVal == 0)
     {
         g_error("GetTempFileName failed");
-        return false;
     }
     g_info("log file location: %s",szTempFileName);
-    strcpy(p,szTempFileName);
-    return true;
+
+    return szTempFileName;
 }
 
 static const char *ga_log_level_str(GLogLevelFlags level)
