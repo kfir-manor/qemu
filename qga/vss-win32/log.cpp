@@ -17,7 +17,7 @@ typedef struct LogState{
 LogConfig *log_config;
 LogState *log_state;
 
-void char * set_log_filepath(const char *p){
+bool set_log_filepath(const char *p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
     TCHAR szTempFileName[MAX_PATH];  
@@ -27,16 +27,17 @@ void char * set_log_filepath(const char *p){
     if (dwRetVal > MAX_PATH || (dwRetVal == 0))
     {
         g_error("GetTempPath failed");
-        p=NULL;
+        return false;
     }
     uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, szTempFileName);
     if (uRetVal == 0)
     {
         g_error("GetTempFileName failed");
-        p=NULL;
+        return false;
     }
     g_info("log file location: %s",szTempFileName);
     p=g_strdup_printf(szTempFileName);
+    return true;
 }
 
 void file_log(FILE *log_file,const char *level_str,const gchar* message)
@@ -47,7 +48,7 @@ void file_log(FILE *log_file,const char *level_str,const gchar* message)
     fflush(log_file);
 }
 
-void LogFunc vss_log(const gchar* log_domain, GLogLevelFlags log_level,
+void vss_log(const gchar* log_domain, GLogLevelFlags log_level,
                      const gchar* message, gpointer user_data)
 {
     LogState *log_state = user_data;
@@ -59,7 +60,7 @@ static FILE *open_logfile(const char *logfilepath)
 {
     FILE *f;
 
-    f = fopen(logfile, "a");
+    f = fopen(logfilepath, "a");
     if (!f) {
         return NULL;
     }
@@ -73,8 +74,7 @@ void init_vss_log(void){
     log_state= g_new0(LogState,1);
     log_state->log_file = stderr;
     g_log_set_default_handler(vss_log, log_state);
-    set_log_filepath(log_config->log_filepath);
-    if(log_config->log_filepath != NULL){
+    if(set_log_filepath(log_config->log_filepath)){
         log_state->log_file = open_logfile(log_config->log_filepath);
     }
 }
