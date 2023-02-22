@@ -14,8 +14,8 @@ typedef struct LogState{
     FILE *log_file;
 } LogState;
 
-LogConfig log_config;
-LogState log_state;
+LogConfig *log_config;
+LogState *log_state;
 
 const char * get_log_filepath(){
     DWORD dwRetVal = 0;
