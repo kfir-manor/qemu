@@ -93,11 +93,9 @@ void init_vss_log(void){
     log_state->log_file = stderr;
     g_log_set_default_handler(vss_log, log_state);
     set_log_filepath(log_config->log_filepath);
-    if(log_config->log_filepath!=NULL){
-        g_info("log file path: %s",log_config->log_filepath);
-        log_state->log_file = open_logfile(log_config->log_filepath);
-        g_info("opened sucess: %s",log_config->log_filepath);
-    }
+    g_info("log file path: %s",log_config->log_filepath);
+    log_state->log_file = open_logfile(log_config->log_filepath);
+    g_info("opened sucess: %s",log_config->log_filepath);
 }
 
 void cleanup_vss_log(void){
