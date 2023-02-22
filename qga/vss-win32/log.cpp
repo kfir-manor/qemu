@@ -1,12 +1,13 @@
 #include <glib/gstdio.h>
 #include <windows.h>
+#include "qemu/osdep.h"
 #include "log.h"
 
-#define MAX_PATH 1024
+#define MAX_LOG_FILE_PATH 1024
 
 
 typedef struct LogConfig{
-    const char log_filepath[MAX_PATH];
+    const char log_filepath[MAX_LOG_FILE_PATH];
 } LogConfig;
 
 typedef struct LogState{
@@ -19,11 +20,11 @@ LogState *log_state;
 bool set_log_filepath(const char *p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
-    TCHAR szTempFileName[MAX_PATH];  
-    TCHAR lpTempPathBuffer[MAX_PATH];
+    TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
+    TCHAR lpTempPathBuffer[MAX_LOG_FILE_PATH];
 
-    dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer); 
-    if (dwRetVal > MAX_PATH || (dwRetVal == 0))
+    dwRetVal = GetTempPath(MAX_LOG_FILE_PATH, lpTempPathBuffer); 
+    if (dwRetVal > MAX_LOG_FILE_PATH || (dwRetVal == 0))
     {
         g_error("GetTempPath failed");
         return false;
