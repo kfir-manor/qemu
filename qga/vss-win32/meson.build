@@ -23,7 +23,7 @@ qga_vss = shared_module(
   ]
 )
 env = environment()
-env.set('log_domain','QGA VSS SERVICE')
+env.set(G_MESSAGES_DEBUG,'QGA VSS SERVICE')
 
 if midl.found()
   gen_tlb = custom_target('gen-tlb',
