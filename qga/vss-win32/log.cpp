@@ -34,7 +34,7 @@ bool set_log_filepath(char * p){
         g_error("GetTempFileName failed");
         goto failed;
     }
-    g_info("log file location: %s",p);
+    printf("log file location: %s",p);
 
     return true;
 failed:
@@ -97,10 +97,10 @@ void init_vss_log(void){
     g_log_set_handler("QGA VSS SERVICE",G_LOG_LEVEL_MASK,vss_log, log_state);
 
     if(set_log_filepath(log_config->log_filepath)){
-            g_info("oppening file: %s",log_config->log_filepath);
+            printf("oppening file: %s",log_config->log_filepath);
             FILE *log_file = open_logfile(log_config->log_filepath);
             if (!log_file) {
-                g_critical("unable to open specified log file: %s",
+                printf("unable to open specified log file: %s",
                            strerror(errno));
                 return;
             }
