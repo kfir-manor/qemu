@@ -38,6 +38,9 @@ bool set_log_filepath(char * p){
     g_info("log file location: %s",szTempFileName);
 
     strcpy(p,szTempFileName);
+    
+    g_info("sanity: %s",log_config->log_filepath);
+
     return true;
 failed:
     return false;
