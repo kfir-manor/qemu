@@ -17,7 +17,7 @@ typedef struct LogState{
 LogConfig *log_config;
 LogState *log_state;
 
-const char *set_log_filepath(char * p){
+void set_log_filepath(char * p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
     TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
