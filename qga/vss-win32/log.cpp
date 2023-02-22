@@ -9,7 +9,6 @@
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
-#include "qga/main.c"
 
 #define G_LOG_USE_STRUCTURED 
 #include <glib.h>
@@ -82,7 +81,7 @@ static void vss_log_cleanup(){
     g_free(log_config);
     g_free(log_state);
 }
-
+/*
 static void system_log(HANDLE event_log, GLogLevelFlags level,
                        const char *level_str, const gchar *msg)
 {
@@ -93,7 +92,7 @@ static void system_log(HANDLE event_log, GLogLevelFlags level,
                 0, 1, NULL, 1, 0, &msg, NULL);
 #endif
 }
-
+*/
 static void file_log(FILE log_file, const char *level_str, const gchar *msg)
 {
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
