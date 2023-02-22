@@ -36,7 +36,7 @@ bool set_log_filepath(const char *p){
         return false;
     }
     g_info("log file location: %s",szTempFileName);
-    p=szTempFileName;
+    strcpy(p,szTempFileName);
     return true;
 }
 
