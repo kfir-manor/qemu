@@ -17,7 +17,7 @@ typedef struct LogState{
 LogConfig *log_config;
 LogState *log_state;
 
-const char *get_log_filepath(){
+const char *set_log_filepath(char * p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
     TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
@@ -35,7 +35,7 @@ const char *get_log_filepath(){
     }
     g_info("log file location: %s",szTempFileName);
 
-    return szTempFileName;
+    p=szTempFileName;
 }
 
 static const char *ga_log_level_str(GLogLevelFlags level)
