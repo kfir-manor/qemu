@@ -1,6 +1,4 @@
-#include <glib.h>
-#include <windows.h>
-#include "util\oslib-win32.c"
+#include "log.h"
 
 #define MAX_PATH 1024
 
@@ -79,7 +77,7 @@ void init_vss_log(){
     }
 }
 
-void cleanup_log(){
+void cleanup_vss_log(){
     g_free(log_config);
     g_free(log_state);
 }
