@@ -101,7 +101,7 @@ void init_vss_log(void){
             if (!log_file) {
                 g_critical("unable to open specified log file: %s",
                            strerror(errno));
-                return NULL;
+                return;
             }
             log_state->log_file = log_file;
     }
