@@ -1,4 +1,3 @@
-#include <glib/gstdio.h>
 #include <winsock2.h>
 #include <windows.h>
 #include "qemu/osdep.h"
