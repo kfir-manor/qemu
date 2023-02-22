@@ -16,6 +16,7 @@
 #include "install.h"
 #include <vswriter.h>
 #include <vsbackup.h>
+#include "log.h"
 
 /* Max wait time for frozen event (VSS can only hold writes for 10 seconds) */
 #define VSS_TIMEOUT_FREEZE_MSEC 60000
@@ -86,7 +87,7 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
-
+    init_vss_log();
     return S_OK;
 }
 
@@ -112,6 +113,7 @@ static void requester_cleanup(void)
         vss_ctx.pVssbc->Release();
         vss_ctx.pVssbc = NULL;
     }
+    cleanup_vss_log();
     vss_ctx.cFrozenVols = 0;
 }
 
