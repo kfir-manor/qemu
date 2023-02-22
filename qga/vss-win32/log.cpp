@@ -103,7 +103,7 @@ void init_vss_log(void){
                            strerror(errno));
                 return NULL;
             }
-            s->log_file = log_file;
+            log_state->log_file = log_file;
     }
 }
 
