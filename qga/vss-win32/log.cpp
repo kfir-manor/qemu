@@ -106,16 +106,16 @@ GLogWriterOutput vss_log(GLogLevelFlags log_level, const GLogField* fields,
                          gsize n_fields, gpointer user_data)
 {
     const char *log_level_str = ga_log_level_str(log_level);
-    LogConfig *log_config = user_data;
+    LogState *log_state = user_data;
     level &= G_LOG_LEVEL_MASK;
 /*
 //LEVEL_ERROR = 4
     if (log_level == LEVEL_ERROR) {
-        system_log(log_config->event_log,log_level,log_level_str,msg);
+        system_log(log_state->event_log,log_level,log_level_str,msg);
         goto out;
     }
 */
-    file_log(log_config->log_file,log_level_str,msg);
+    file_log(log_state->log_file,log_level_str,msg);
 out:
     return G_LOG_WRITER_HANDLED;
 }
