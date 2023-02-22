@@ -357,7 +357,7 @@ static void system_log(HANDLE event_log, GLogLevelFlags level,
 #endif
 }
 
-static void file_log(FILE log_file, const char *level_str, const gchar *msg)
+static void file_log(FILE *log_file, const char *level_str, const gchar *msg)
 {
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
     g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
