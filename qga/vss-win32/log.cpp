@@ -26,10 +26,12 @@ typedef struct LogState{
 #ifdef _WIN32
     HANDLE event_log;
 #endif
-} LogState;
 */
+
+} LogState;
+
 static LogConfig log_config= g_new0(LogConfig, 1);
-static GAState *log_state = g_new0(LogState, 1);
+static LogState *log_state = g_new0(LogState, 1);
 
 void get_log_file_path(){
     DWORD dwRetVal = 0;
@@ -100,9 +102,8 @@ static void file_log(FILE log_file, const char *level_str, const gchar *msg)
     fflush(log_file);   
 }
 
-
-GLogWriterOutput vss_log(GLogLevelFlags log_level, const GLogField* fields,
-                         gsize n_fields, gpointer user_data)
+void GLogWriterOutput vss_log(const gchar* log_domain, GLogLevelFlags log_level,
+                              const gchar* message, gpointer user_data)
 {
     const char *log_level_str = ga_log_level_str(log_level);
     LogState *log_state = user_data;
