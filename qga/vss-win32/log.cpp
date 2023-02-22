@@ -10,7 +10,6 @@
 #include <tchar.h>
 #include <stdio.h>
 
-#define G_LOG_USE_STRUCTURED 
 #include <glib.h>
 
 #include <iostream>
@@ -56,7 +55,7 @@ void get_log_file_path(){
 static void vss_log_init()
 {
     log_state->log_file = stderr;
-    g_log_set_writer_func(vss_log,log_state);
+    log_set_default_handler(vss_log,log_state);
 /*
 #ifdef _WIN32
     log_state->event_log = RegisterEventSource(NULL, "qemu-ga-vss");
