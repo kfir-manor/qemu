@@ -22,6 +22,8 @@ qga_vss = shared_module(
     cc.find_library('intl')
   ]
 )
+env = environment()
+env.set('log_domain','QGA VSS SERVICE')
 
 if midl.found()
   gen_tlb = custom_target('gen-tlb',
