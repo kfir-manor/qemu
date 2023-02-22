@@ -20,7 +20,6 @@ LogState *log_state;
 bool set_log_filepath(char * p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
-    TCHAR szTempFileName[MAX_LOG_FILE_PATH];  
     TCHAR lpTempPathBuffer[MAX_LOG_FILE_PATH];
 
     dwRetVal = GetTempPath(MAX_LOG_FILE_PATH, lpTempPathBuffer); 
@@ -29,18 +28,14 @@ bool set_log_filepath(char * p){
         g_error("GetTempPath failed");
         goto failed;
     }
-    uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, szTempFileName);
+    uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, p);
     if (uRetVal == 0)
     {
         g_error("GetTempFileName failed");
         goto failed;
     }
-    g_info("log file location: %s",szTempFileName);
-
-    strcpy(p,szTempFileName);
+    g_info("log file location: %s",p);
     
-    g_info("sanity: %s",log_config->log_filepath);
-
     return true;
 failed:
     return false;
