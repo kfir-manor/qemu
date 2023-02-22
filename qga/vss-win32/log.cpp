@@ -36,7 +36,7 @@ bool set_log_filepath(const char *p){
         return false;
     }
     g_info("log file location: %s",szTempFileName);
-    p=g_strdup_printf(szTempFileName);
+    p=szTempFileName;
     return true;
 }
 
@@ -52,7 +52,7 @@ void vss_log(const gchar* log_domain, GLogLevelFlags log_level,
                      const gchar* message, gpointer user_data)
 {
     LogState *log_state = user_data;
-    const char *level_str = ga_log_level_str(level);
+    const char *level_str = ga_log_level_str(log_level);
     file_log(log_state->log_file,level_str,message);
 }
 
