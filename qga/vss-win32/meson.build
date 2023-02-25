@@ -1,3 +1,6 @@
+env = environment()
+env.set('G_LOG_DOMAIN', 'QGA VSS SERVICE')
+
 link_args = cc.get_supported_link_arguments([
   '-fstack-protector-all',
   '-fstack-protector-strong',
