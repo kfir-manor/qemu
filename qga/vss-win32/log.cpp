@@ -125,6 +125,7 @@ static const char *ga_log_level_str(GLogLevelFlags level)
 void GLogFunc vss_log(const gchar* log_domain, GLogLevelFlags log_level,
                               const gchar* message, gpointer user_data)
 {
+    printf("log is working: %s",message);
     const char *log_level_str = ga_log_level_str(log_level);
     LogState *log_state = user_data;
     log_level &= G_LOG_LEVEL_MASK;
