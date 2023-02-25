@@ -23,8 +23,6 @@ qga_vss = shared_module(
   ]
 )
 
-AM_CPPFLAGS = -G_LOG_DOMAIN='QGA VSS SERVICE\'
-
 if midl.found()
   gen_tlb = custom_target('gen-tlb',
                           input: 'qga-vss.idl',
