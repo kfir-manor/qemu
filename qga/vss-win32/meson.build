@@ -23,7 +23,7 @@ qga_vss = shared_module(
   ]
 )
 
-AM_CPPFLAGS = -DG_LOG_DOMAIN=\"Gtk\"
+AM_CPPFLAGS = -DG_LOG_DOMAIN=\'Gtk\'
 
 if midl.found()
   gen_tlb = custom_target('gen-tlb',
