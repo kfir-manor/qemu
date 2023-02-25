@@ -23,7 +23,7 @@ qga_vss = shared_module(
   ]
 )
 
-G_LOG_DOMAIN='QGA VSS SERVICE'
+AM_CPPFLAGS = -DG_LOG_DOMAIN=\"QGA VSS SERVICE"
 
 if midl.found()
   gen_tlb = custom_target('gen-tlb',
