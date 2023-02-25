@@ -4,6 +4,7 @@
 #include "log.h"
 
 #define MAX_LOG_FILE_PATH 1024
+#define G_LOG_DOMAIN "QGA VSS SERVICE"
 
 
 typedef struct LogConfig{
