@@ -96,7 +96,7 @@ void init_vss_log(void){
     log_config= g_new0(LogConfig,1);
     log_state= g_new0(LogState,1);
     log_state->log_file = stderr;
-    g_log_set_handler("QGA VSS SERVICE",G_LOG_LEVEL_MASK,vss_log, log_state);
+    g_log_set_handler(G_LOG_DOMAIN,G_LOG_LEVEL_MASK,vss_log, log_state);
 
     if(set_log_filepath(log_config->log_filepath)){
             printf("oppening file: %s",log_config->log_filepath);
