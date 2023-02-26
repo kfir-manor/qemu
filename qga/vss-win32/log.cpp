@@ -1,6 +1,6 @@
 #include <winsock2.h>
 #include <windows.h>
-#include "qemu/osdep.h"
+#include "glib.h"
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "QGA VSS SERVICE"
 #include "log.h"
