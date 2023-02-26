@@ -1,10 +1,10 @@
 #include <winsock2.h>
 #include <windows.h>
 #include "qemu/osdep.h"
+#define G_LOG_DOMAIN "QGA VSS SERVICE"
 #include "log.h"
 
 #define MAX_LOG_FILE_PATH 1024
-#define G_LOG_DOMAIN "QGA VSS SERVICE"
 
 typedef struct LogConfig{
     char log_filepath[MAX_LOG_FILE_PATH];
