@@ -28,8 +28,6 @@ bool set_log_filepath(char * p){
         g_error("GetTempFileName failed");
         goto failed;
     }
-    printf("log file location: %s", p);
-
     return true;
 failed:
     return false;
@@ -66,7 +64,6 @@ void file_log(FILE *log_file,const char *level_str,const gchar* message)
 void vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                      const gchar *message, gpointer user_data)
 {
-    printf("log is working: %s", message);
     LogState *log_state = (LogState *)user_data;
     const char *level_str = ga_log_level_str(log_level);
     file_log(log_state->log_file, level_str, message);
