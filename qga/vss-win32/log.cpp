@@ -1,10 +1,9 @@
 #include "qemu/osdep.h"
 #include "log.h"
 
-#define MAX_LOG_FILE_PATH 1024
 
 typedef struct LogConfig{
-    char log_filepath[MAX_LOG_FILE_PATH];
+    char log_filepath[MAX_PATH];
 } LogConfig;
 
 typedef struct LogState{
@@ -17,21 +16,19 @@ LogState *log_state;
 bool set_log_filepath(char * p){
     DWORD dwRetVal = 0;
     UINT uRetVal   = 0;
-    TCHAR lpTempPathBuffer[MAX_LOG_FILE_PATH];
+    TCHAR lpTempPathBuffer[MAX_PATH];
 
-    dwRetVal = GetTempPath(MAX_LOG_FILE_PATH, lpTempPathBuffer); 
-    if (dwRetVal > MAX_LOG_FILE_PATH || (dwRetVal == 0))
-    {
+    dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer);
+    if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
         g_error("GetTempPath failed");
         goto failed;
     }
     uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, p);
-    if (uRetVal == 0)
-    {
+    if (uRetVal == 0) {
         g_error("GetTempFileName failed");
         goto failed;
     }
-    printf("log file location: %s",p);
+    printf("log file location: %s", p);
 
     return true;
 failed:
@@ -66,13 +63,13 @@ void file_log(FILE *log_file,const char *level_str,const gchar* message)
     fflush(log_file);
 }
 
-void vss_log(const gchar* log_domain, GLogLevelFlags log_level,
-                     const gchar* message, gpointer user_data)
+void vss_log(const gchar *log_domain, GLogLevelFlags log_level,
+                     const gchar *message, gpointer user_data)
 {
-    printf("log is working: %s",message);
-    LogState *log_state = (LogState*)user_data;
+    printf("log is working: %s", message);
+    LogState *log_state = (LogState *)user_data;
     const char *level_str = ga_log_level_str(log_level);
-    file_log(log_state->log_file,level_str,message);
+    file_log(log_state->log_file, level_str, message);
 }
 
 static FILE *open_logfile(const char *logfilepath)
@@ -89,12 +86,12 @@ static FILE *open_logfile(const char *logfilepath)
 }
 
 void init_vss_log(void){
-    log_config= g_new0(LogConfig,1);
-    log_state= g_new0(LogState,1);
+    log_config= g_new0(LogConfig, 1);
+    log_state= g_new0(LogState, 1);
     log_state->log_file = stderr;
     g_log_set_handler(G_LOG_DOMAIN,G_LOG_LEVEL_MASK,vss_log, log_state);
 
-    if(set_log_filepath(log_config->log_filepath)){
+    if (set_log_filepath(log_config->log_filepath)) {
             printf("oppening file: %s",log_config->log_filepath);
             FILE *log_file = open_logfile(log_config->log_filepath);
             if (!log_file) {
