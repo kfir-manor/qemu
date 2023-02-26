@@ -1,4 +1,4 @@
-#include <windows.h>
+#include "qemu/osdep.h"
 #include "log.h"
 
 #define MAX_LOG_FILE_PATH 1024
