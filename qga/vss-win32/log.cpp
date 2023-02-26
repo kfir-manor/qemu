@@ -1,8 +1,5 @@
 #include <winsock2.h>
 #include <windows.h>
-#include "glib.h"
-#undef G_LOG_DOMAIN
-#define G_LOG_DOMAIN "QGA VSS SERVICE"
 #include "log.h"
 
 #define MAX_LOG_FILE_PATH 1024
