@@ -88,6 +88,7 @@ STDAPI requester_init(void)
         return HRESULT_FROM_WIN32(GetLastError());
     }
     init_vss_log();
+    fprint("I My name is requester_init")
     return S_OK;
 }
 
