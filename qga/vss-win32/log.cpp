@@ -151,6 +151,8 @@ void init_vss_log(void)
                       active_vss_log, log_state);
     g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                       inactive_vss_log, NULL);
+    printf(log_config->log_level_mask);
+    printf(inactive_mask);
     g_error("im alive");
     g_critical("im alive");
     g_warning("im alive");
