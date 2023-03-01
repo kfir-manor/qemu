@@ -41,7 +41,7 @@ GLogLevelFlags get_log_level_mask(DWORD log_level){
     if(log_level > 2) {
         default_mask= default_mask | DEBUG;
     }
-    return default_mask
+    return default_mask;
 }
 
 bool set_tmp_filepath(char * p){
@@ -128,7 +128,7 @@ void init_vss_log(void)
                                  get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                                 QGA_PROVIDER_REGISTRY_ADDRESS,
                                                  "LogLevel", 0));
-    GLogLevelFlags inactive_mask=~log_config->log_level_mask;
+    GLogLevelFlags inactive_mask=255-log_config->log_level_mask;
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
     g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
