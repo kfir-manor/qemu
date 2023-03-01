@@ -143,7 +143,7 @@ void init_vss_log(void)
 
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
-    if(inactive_mask != 0) {
+    if (inactive_mask != 0) {
         g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                         inactive_vss_log, NULL);
     }
