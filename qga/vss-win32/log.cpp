@@ -37,7 +37,7 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
 DWORD get_log_level(void){
     return get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                QGA_PROVIDER_REGISTRY_ADDRESS,
-                               "LogLevel", 0)
+                               "LogLevel", 0);
 }
 
 GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
