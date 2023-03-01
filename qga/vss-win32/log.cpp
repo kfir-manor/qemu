@@ -127,10 +127,11 @@ void init_vss_log(void)
     log_config->log_level_mask = get_log_level_mask(
                                  get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                                 QGA_PROVIDER_REGISTRY_ADDRESS,
-                                                 "LogLevel", 0))
+                                                 "LogLevel", 0));
+    GLogLevelFlags inactive_mask=~log_config->log_level_mask;
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
-    g_log_set_handler(G_LOG_DOMAIN, ~log_config->log_level_mask,
+    g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                       inactive_vss_log, NULL);
     g_info("im alive");
     g_message("im alive");
