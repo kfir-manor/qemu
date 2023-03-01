@@ -30,18 +30,11 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
 }
 
 GLogLevelFlags get_log_level_mask(DWORD log_level){
-    GLogLevelFlags default_mask=G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL 
-                                | G_LOG_LEVEL_WARNING;
-    if(log_level > 0) {
-        default_mask= default_mask | G_LOG_LEVEL_MESSAGE;
+    int log_level_mask=7;
+    for(int i=default_level;i>default_level+log_level;i++) {
+        log_level_mask |= 1 << i;
     }
-    if(log_level > 1) {
-        default_mask= default_mask | G_LOG_LEVEL_INFO;
-    }
-    if(log_level > 2) {
-        default_mask= default_mask | G_LOG_LEVEL_DEBUG;
-    }
-    return default_mask;
+    return static_cast<GLogLevelFlags>(log_level_mask);
 }
 
 bool set_tmp_filepath(char * p){
