@@ -2,6 +2,9 @@
 #include "log.h"
 #include "vss-handles.h"
 
+#define DEFAULT_LOG_LEVEL_MASK 28
+#define FULL_LOG_LEVEL_MASK 252
+
 typedef struct LogConfig{
     char log_filepath[MAX_PATH];
     GLogLevelFlags log_level_mask;
@@ -29,13 +32,29 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
     return dwordData;
 }
 
-GLogLevelFlags get_log_level_mask(DWORD log_level){
-    int log_level_mask=7;
-    for(int i=default_level;i>default_level+log_level;i++) {
-        log_level_mask |= 1 << i;
+DWORD get_log_level(void){
+    return get_reg_dword_value(HKEY_LOCAL_MACHINE,
+                               QGA_PROVIDER_REGISTRY_ADDRESS,
+                               "LogLevel", 0)
+}
+
+GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
+    int log_level_mask=DEFAULT_LOG_LEVEL_MASK;
+    if(log_level > 0) {
+        default_mask = default_mask | G_LOG_LEVEL_MESSAGE;
+    }
+    if(log_level > 1) {
+        default_mask = default_mask | G_LOG_LEVEL_INFO;
+    }
+    if(log_level > 2) {
+        default_mask = default_mask | G_LOG_LEVEL_DEBUG;
     }
     return static_cast<GLogLevelFlags>(log_level_mask);
 }
+GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask) 
+{ 
+ return static_cast<GLogLevelFlags>(255 ^ log_mask);
+} 
 
 bool set_tmp_filepath(char * p){
     DWORD dwRetVal = 0;
@@ -117,11 +136,8 @@ void init_vss_log(void)
     log_config= g_new0(LogConfig, 1);
     log_state= g_new0(LogState, 1);
     log_state->log_file = stderr;
-    log_config->log_level_mask = get_log_level_mask(
-                                 get_reg_dword_value(HKEY_LOCAL_MACHINE,
-                                                QGA_PROVIDER_REGISTRY_ADDRESS,
-                                                 "LogLevel", 0));
-    GLogLevelFlags inactive_mask=static_cast<GLogLevelFlags>(255-(int)log_config->log_level_mask);
+    log_config->log_level_mask = get_log_level_mask();
+    GLogLevelFlags inactive_mask=get_inactive_mask(log_config->log_level_mask);
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
     g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
