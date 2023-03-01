@@ -4,6 +4,7 @@
 
 #define DEFAULT_LOG_LEVEL_MASK 28
 #define FULL_LOG_LEVEL_MASK 252
+#define LOG_FILE_NAME "qga_vss_log.log"
 
 typedef struct LogConfig{
     char log_filepath[MAX_PATH];
@@ -64,21 +65,17 @@ GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask)
  return static_cast<GLogLevelFlags>(FULL_LOG_LEVEL_MASK ^ log_mask);
 } 
 
-bool set_tmp_filepath(char * p){
+bool set_tmp_file_path(char * p){
     DWORD dwRetVal = 0;
-    UINT uRetVal   = 0;
     TCHAR lpTempPathBuffer[MAX_PATH];
 
     dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer);
     if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
-        g_error("GetTempPath failed");
+        g_critical("GetTempPath failed");
         goto failed;
     }
-    uRetVal = GetTempFileName(lpTempPathBuffer, TEXT("qga_vss_log"), 0, p);
-    if (uRetVal == 0) {
-        g_error("GetTempFileName failed");
-        goto failed;
-    }
+    strcat(lpTempPathBuffer,LOG_FILE_NAME);
+    strcpy(p,lpTempPathBuffer)
     return true;
 failed:
     return false;
@@ -141,25 +138,20 @@ static FILE *open_logfile(const char *logfilepath)
 
 void init_vss_log(void)
 {
-    log_config= g_new0(LogConfig, 1);
-    log_state= g_new0(LogState, 1);
+    log_config = g_new0(LogConfig, 1);
+    log_state = g_new0(LogState, 1);
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
-    GLogLevelFlags inactive_mask=get_inactive_mask(log_config->log_level_mask);
+    GLogLevelFlags inactive_mask = get_inactive_mask(log_config->log_level_mask);
 
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
-    g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
-                      inactive_vss_log, NULL);
-    g_critical("%d",log_config->log_level_mask);
-    g_critical("%d",inactive_mask);
-    g_critical("im alive");
-    g_warning("im alive");
-    g_info("im alive");
-    g_message("im alive");
-    g_debug("im alive");
+    if(inactive_mask != 0) {
+        g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
+                        inactive_vss_log, NULL);
+    }
 
-    if (set_tmp_filepath(log_config->log_filepath)) {
+    if (set_tmp_file_path(log_config->log_filepath)) {
             printf("oppening file: %s",log_config->log_filepath);
             FILE *log_file = open_logfile(log_config->log_filepath);
             if (!log_file) {
