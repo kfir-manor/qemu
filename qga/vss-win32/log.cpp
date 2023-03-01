@@ -39,17 +39,17 @@ DWORD get_log_level(void){
 }
 
 GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
-    int log_level_mask=DEFAULT_LOG_LEVEL_MASK;
+    int mask=DEFAULT_LOG_LEVEL_MASK;
     if(log_level > 0) {
-        default_mask = default_mask | G_LOG_LEVEL_MESSAGE;
+        mask = default_mask | G_LOG_LEVEL_MESSAGE;
     }
     if(log_level > 1) {
-        default_mask = default_mask | G_LOG_LEVEL_INFO;
+        mask = default_mask | G_LOG_LEVEL_INFO;
     }
     if(log_level > 2) {
-        default_mask = default_mask | G_LOG_LEVEL_DEBUG;
+        mask = default_mask | G_LOG_LEVEL_DEBUG;
     }
-    return static_cast<GLogLevelFlags>(log_level_mask);
+    return static_cast<GLogLevelFlags>(mask);
 }
 GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask) 
 { 
