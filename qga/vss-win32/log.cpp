@@ -35,21 +35,23 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
 
 
 
-DWORD get_log_level(void){
+DWORD get_log_level(void)
+{
     return get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                QGA_PROVIDER_REGISTRY_ADDRESS,
                                "LogLevel", 0);
 }
 
-GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
-    int mask=DEFAULT_LOG_LEVEL_MASK;
-    if(log_level > 0) {
+GLogLevelFlags convert_log_level_to_mask(DWORD log_level)
+{
+    int mask = DEFAULT_LOG_LEVEL_MASK;
+    if (log_level > 0) {
         mask |= G_LOG_LEVEL_MESSAGE;
     }
-    if(log_level > 1) {
+    if (log_level > 1) {
         mask |= G_LOG_LEVEL_INFO;
     }
-    if(log_level > 2) {
+    if (log_level > 2) {
         mask |= G_LOG_LEVEL_DEBUG;
     }
     return static_cast<GLogLevelFlags>(mask);
@@ -67,16 +69,13 @@ GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask)
 
 bool set_tmp_file_path(char * p){
     DWORD dwRetVal = 0;
-
     dwRetVal = GetTempPath(MAX_PATH, p);
     if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
         g_critical("GetTempPath failed");
-        goto failed;
+        return false;
     }
     strcat(p,LOG_FILE_NAME);
     return true;
-failed:
-    return false;
 }
 
 static const char *ga_log_level_str(GLogLevelFlags level)
