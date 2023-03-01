@@ -41,13 +41,13 @@ DWORD get_log_level(void){
 GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
     int mask=DEFAULT_LOG_LEVEL_MASK;
     if(log_level > 0) {
-        mask = default_mask | G_LOG_LEVEL_MESSAGE;
+        mask | = G_LOG_LEVEL_MESSAGE;
     }
     if(log_level > 1) {
-        mask = default_mask | G_LOG_LEVEL_INFO;
+        mask | = G_LOG_LEVEL_INFO;
     }
     if(log_level > 2) {
-        mask = default_mask | G_LOG_LEVEL_DEBUG;
+        mask | = G_LOG_LEVEL_DEBUG;
     }
     return static_cast<GLogLevelFlags>(mask);
 }
