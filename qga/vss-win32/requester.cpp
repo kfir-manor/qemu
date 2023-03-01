@@ -113,7 +113,6 @@ static void requester_cleanup(void)
         vss_ctx.pVssbc->Release();
         vss_ctx.pVssbc = NULL;
     }
-    cleanup_vss_log();
     vss_ctx.cFrozenVols = 0;
 }
 
@@ -127,7 +126,7 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
-
+    cleanup_vss_log();
     return S_OK;
 }
 
@@ -479,7 +478,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-
+    g_info("end requester_freeze");
     return;
 
 out:
@@ -490,6 +489,8 @@ out:
 out1:
     requester_cleanup();
     CoUninitialize();
+    g_info("end requester_freeze");
+
 }
 
 
@@ -561,4 +562,5 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 
     CoUninitialize();
     StopService();
+
 }
