@@ -1,5 +1,6 @@
 #include "qemu/osdep.h"
 #include "log.h"
+#include "vss-handles.h"
 
 typedef struct LogConfig{
     char log_filepath[MAX_PATH];
