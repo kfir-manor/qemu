@@ -883,7 +883,7 @@ static const QEMUOption qemu_options[] = {
 #define ARCHHEADING(text, arch_mask)
 
 #include "qemu-options.def"
-    { NULL },
+    { /* end of list */ }
 };
 
 typedef struct VGAInterfaceInfo {
@@ -3264,6 +3264,7 @@ void qemu_init(int argc, char **argv)
                 vnc_parse(optarg);
                 break;
             case QEMU_OPTION_no_acpi:
+                warn_report("-no-acpi is deprecated, use '-machine acpi=off' instead");
                 qdict_put_str(machine_opts_dict, "acpi", "off");
                 break;
             case QEMU_OPTION_no_hpet:
