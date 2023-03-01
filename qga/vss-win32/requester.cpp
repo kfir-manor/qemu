@@ -478,7 +478,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-    g_info("end requester_freeze");
     return;
 
 out:
@@ -489,7 +488,6 @@ out:
 out1:
     requester_cleanup();
     CoUninitialize();
-    g_info("end requester_freeze");
 
 }
 
