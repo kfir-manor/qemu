@@ -138,15 +138,18 @@ void init_vss_log(void)
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     GLogLevelFlags inactive_mask=get_inactive_mask(log_config->log_level_mask);
-    
+
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
     g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                       inactive_vss_log, NULL);
+    g_error("im alive")
+    g_critical("im alive");
+    g_warning("im alive");
     g_info("im alive");
     g_message("im alive");
     g_debug("im alive");
-    g_warning("im alive");
+
     if (set_tmp_filepath(log_config->log_filepath)) {
             printf("oppening file: %s",log_config->log_filepath);
             FILE *log_file = open_logfile(log_config->log_filepath);
