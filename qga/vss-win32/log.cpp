@@ -32,6 +32,8 @@ DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
     return dwordData;
 }
 
+
+
 DWORD get_log_level(void){
     return get_reg_dword_value(HKEY_LOCAL_MACHINE,
                                QGA_PROVIDER_REGISTRY_ADDRESS,
@@ -51,6 +53,12 @@ GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
     }
     return static_cast<GLogLevelFlags>(mask);
 }
+
+GLogLevelFlags get_log_level_mask(void)
+{
+    return convert_log_level_to_mask(get_log_level());
+}
+
 GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask) 
 { 
  return static_cast<GLogLevelFlags>(FULL_LOG_LEVEL_MASK ^ log_mask);
