@@ -130,7 +130,7 @@ void init_vss_log(void)
                                                  "LogLevel", 0))
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
-    g_log_set_handler(G_LOG_DOMAIN, ~(log_config->log_level_mask),
+    g_log_set_handler(G_LOG_DOMAIN, ~log_config->log_level_mask,
                       inactive_vss_log, NULL);
     g_info("im alive");
     g_message("im alive");
