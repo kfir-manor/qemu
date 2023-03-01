@@ -11,8 +11,12 @@ typedef struct LogConfig{
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
+typedef struct LogState{
+    FILE *log_file;
+} LogState;
+
 LogConfig *log_config;
-FILE *log_file;
+LogState *log_state;
 
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)
@@ -111,9 +115,9 @@ void inactive_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                      const gchar *message, gpointer user_data)
 {
-    FILE *log_file = (FILE *)user_data;
+    LogState *log_state = (LogState *)user_data;
     const char *level_str = ga_log_level_str(log_level);
-    file_log(log_file, level_str, message);
+    file_log(log_state->log_file, level_str, message);
 }
 
 static FILE *open_logfile(const char *logfilepath)
@@ -133,12 +137,12 @@ void init_vss_log(void)
 {
     GLogLevelFlags inactive_mask;
     log_config = g_new0(LogConfig, 1);
-    log_file = g_new0(FILE, 1);
-    log_file = stderr;
+    log_state = g_new0(LogState, 1);
+    log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     inactive_mask = get_inactive_mask(log_config->log_level_mask);
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
-                      active_vss_log, log_file);
+                      active_vss_log, log_state);
     if (inactive_mask != 0) {
         g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                         inactive_vss_log, NULL);
@@ -146,18 +150,18 @@ void init_vss_log(void)
 
     if (set_tmp_file_path(log_config->log_filepath)) {
             printf("oppening file: %s",log_config->log_filepath);
-            FILE *tmp_log_file = open_logfile(log_config->log_filepath);
-            if (!tmp_log_file) {
+            FILE *log_file = open_logfile(log_config->log_filepath);
+            if (!log_file) {
                 printf("unable to open specified log file: %s",
                            strerror(errno));
                 return;
             }
-            *log_file = *tmp_log_file;
+            log_state->log_file = log_file;
     }
 }
 
 void cleanup_vss_log(void)
 {
     g_free(log_config);
-    g_free(log_file);
+    g_free(log_state);
 }
