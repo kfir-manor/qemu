@@ -135,11 +135,11 @@ static FILE *open_logfile(const char *logfilepath)
 
 void init_vss_log(void)
 {
+    GLogLevelFlags inactive_mask = 0;
     log_config = g_new0(LogConfig, 1);
     log_state = g_new0(LogState, 1);
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
-    GLogLevelFlags inactive_mask = 0;
     inactive_mask = get_inactive_mask(log_config->log_level_mask);
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
                       active_vss_log, log_state);
