@@ -67,15 +67,13 @@ GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask)
 
 bool set_tmp_file_path(char * p){
     DWORD dwRetVal = 0;
-    TCHAR lpTempPathBuffer[MAX_PATH];
 
-    dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer);
+    dwRetVal = GetTempPath(MAX_PATH, p);
     if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
         g_critical("GetTempPath failed");
         goto failed;
     }
-    strcat(lpTempPathBuffer,LOG_FILE_NAME);
-    strcpy(p,lpTempPathBuffer);
+    strcat(p,LOG_FILE_NAME);
     return true;
 failed:
     return false;
