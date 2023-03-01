@@ -6,8 +6,8 @@
 #define FULL_LOG_LEVEL_MASK 252
 #define LOG_FILE_NAME "qga_vss_log.log"
 
-typedef struct LogConfig{
-    char log_filepath[MAX_PATH+15];
+typedef struct LogConfig {
+    char log_filepath[MAX_PATH + 15];
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
@@ -59,19 +59,20 @@ GLogLevelFlags get_log_level_mask(void)
     return convert_log_level_to_mask(get_log_level());
 }
 
-GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask) 
-{ 
+GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask)
+{
  return static_cast<GLogLevelFlags>(FULL_LOG_LEVEL_MASK ^ log_mask);
-} 
+}
 
-bool set_tmp_file_path(char * p){
+bool set_tmp_file_path(char *p)
+{
     DWORD dwRetVal = 0;
     dwRetVal = GetTempPath(MAX_PATH, p);
     if (dwRetVal > MAX_PATH || (dwRetVal == 0)) {
         g_critical("GetTempPath failed");
         return false;
     }
-    strcat(p,LOG_FILE_NAME);
+    strcat(p, LOG_FILE_NAME);
     return true;
 }
 
@@ -95,7 +96,7 @@ static const char *ga_log_level_str(GLogLevelFlags level)
     }
 }
 
-void file_log(FILE *log_file,const char *level_str,const gchar* message)
+void file_log(FILE *log_file, const char *level_str, const gchar* message)
 {
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
     g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
@@ -146,7 +147,7 @@ void init_vss_log(void)
     }
 
     if (set_tmp_file_path(log_config->log_filepath)) {
-            printf("oppening file: %s",log_config->log_filepath);
+            printf("oppening file: %s", log_config->log_filepath);
             FILE *tmp_log_file = open_logfile(log_config->log_filepath);
             if (!tmp_log_file) {
                 printf("unable to open specified log file: %s",
