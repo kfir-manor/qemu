@@ -75,7 +75,7 @@ bool set_tmp_file_path(char * p){
         goto failed;
     }
     strcat(lpTempPathBuffer,LOG_FILE_NAME);
-    strcpy(p,lpTempPathBuffer)
+    strcpy(p,lpTempPathBuffer);
     return true;
 failed:
     return false;
