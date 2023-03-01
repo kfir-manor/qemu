@@ -53,7 +53,7 @@ GLogLevelFlags convert_log_level_to_mask(DWORD log_level){
 }
 GLogLevelFlags get_inactive_mask(GLogLevelFlags log_mask) 
 { 
- return static_cast<GLogLevelFlags>(255 ^ log_mask);
+ return static_cast<GLogLevelFlags>(FULL_LOG_LEVEL_MASK ^ log_mask);
 } 
 
 bool set_tmp_filepath(char * p){
