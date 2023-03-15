@@ -2,6 +2,7 @@
 #include "vss-log.h"
 #include "qemu/qga/log.h"
 #include "vss-handles.h"
+#include "qga/log.c"
 
 #define DEFAULT_LOG_LEVEL_MASK 28
 #define FULL_LOG_LEVEL_MASK 252
@@ -12,9 +13,13 @@ typedef struct LogConfig {
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
+typedef struct LogState {
+    FILE *log_file;
+    IVssBackupComponents **ppVssbc;
+} LogState;
 
 LogConfig *log_config;
-FILE *log_file;
+LogState *log_state;
 
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)

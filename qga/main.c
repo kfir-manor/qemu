@@ -1192,14 +1192,79 @@ static bool check_is_frozen(GAState *s)
     return false;
 }
 
+void init_qga_log(GAState *s){
+    s->log_level = config->log_level;
+    s->log_file = stderr;
+#ifdef CONFIG_FSFREEZE
+    s->fsfreeze_hook = config->fsfreeze_hook;
+#endif
+    s->pstate_filepath = g_strdup_printf("%s/qga.state", config->state_dir);
+    s->state_filepath_isfrozen = g_strdup_printf("%s/qga.state.isfrozen",
+                                                 config->state_dir);
+    s->frozen = check_is_frozen(s);
+
+    g_log_set_default_handler(ga_log, s);
+    g_log_set_fatal_mask(NULL, G_LOG_LEVEL_ERROR);
+    ga_enable_logging(s);
+
+    g_debug("Guest agent version %s started", QEMU_FULL_VERSION);
+
+#ifdef _WIN32
+    s->event_log = RegisterEventSource(NULL, "qemu-ga");
+    if (!s->event_log) {
+        g_autofree gchar *errmsg = g_win32_error_message(GetLastError());
+        g_critical("unable to register event source: %s", errmsg);
+        return NULL;
+    }
+
+    /* On win32 the state directory is application specific (be it the default
+     * or a user override). We got past the command line parsing; let's create
+     * the directory (with any intermediate directories). If we run into an
+     * error later on, we won't try to clean up the directory, it is considered
+     * persistent.
+     */
+    if (g_mkdir_with_parents(config->state_dir, S_IRWXU) == -1) {
+        g_critical("unable to create (an ancestor of) the state directory"
+                   " '%s': %s", config->state_dir, strerror(errno));
+        return NULL;
+    }
+#endif
+
+    if (ga_is_frozen(s)) {
+        if (config->daemonize) {
+            /* delay opening/locking of pidfile till filesystems are unfrozen */
+            s->deferred_options.pid_filepath = config->pid_filepath;
+            become_daemon(NULL);
+        }
+        if (config->log_filepath) {
+            /* delay opening the log file till filesystems are unfrozen */
+            s->deferred_options.log_filepath = config->log_filepath;
+        }
+        ga_disable_logging(s);
+        qmp_for_each_command(&ga_commands, ga_disable_not_allowed, NULL);
+    } else {
+        if (config->daemonize) {
+            become_daemon(config->pid_filepath);
+        }
+        if (config->log_filepath) {
+            FILE *log_file = ga_open_logfile(config->log_filepath);
+            if (!log_file) {
+                g_critical("unable to open specified log file: %s",
+                           strerror(errno));
+                return NULL;
+            }
+            s->log_file = log_file;
+        }
+    }
+}
+
 static GAState *initialize_agent(GAConfig *config, int socket_activation)
 {
     GAState *s = g_new0(GAState, 1);
 
     g_assert(ga_state == NULL);
 
-    init_log(s,config);
-
+    init_vss_log(s);
     /* load persistent state from disk */
     if (!read_persistent_state(&s->pstate,
                                s->pstate_filepath,
