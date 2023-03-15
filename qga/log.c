@@ -65,14 +65,15 @@ static FILE *open_logfile(const char *logfile)
     return f;
 }
 
-void file_log(){
+void file_log(FILE *log_file, const char *level_str, const gchar* message)
+{
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
     g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
-    fprintf(s->log_file, "%s: %s: %s\n", nowstr, level_str, msg);
-    fflush(s->log_file);
+    fprintf(log_file, "%s: %s: %s\n", nowstr, level_str, message);
+    fflush(log_file);
 }
 
-void system_log(){
+void system_log(, const char *level_str, const gchar* message){
     
 #ifndef _WIN32
     syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
