@@ -14,7 +14,7 @@
 #include "qemu/osdep.h"
 #include <getopt.h>
 #include <glib/gstdio.h>
-#include "qga-log.c"
+#include "log.h"
 #ifndef _WIN32
 #include <syslog.h>
 #include <sys/wait.h>
@@ -1190,6 +1190,24 @@ static bool check_is_frozen(GAState *s)
     }
 #endif
     return false;
+}
+
+static void ga_log(const gchar *domain, GLogLevelFlags level,
+                   const gchar *msg, gpointer opaque)
+{
+    GAState *s = opaque;
+    const char *level_str = ga_log_level_str(level);
+
+    if (!ga_logging_enabled(s)) {
+        return;
+    }
+
+    level &= G_LOG_LEVEL_MASK;
+    if (g_strcmp0(domain, "syslog") == 0) {
+        system_log(level,level_str,msg);
+    } else if (level & s->log_level) {
+        file_log(s,level_str,msg);
+    }
 }
 
 void init_qga_log(GAState *s){

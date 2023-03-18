@@ -70,24 +70,6 @@ static void file_log(GAState *s,const char *level_str,const gchar *msg)
         fflush(s->log_file);
 }
 
-static void ga_log(const gchar *domain, GLogLevelFlags level,
-                   const gchar *msg, gpointer opaque)
-{
-    GAState *s = opaque;
-    const char *level_str = ga_log_level_str(level);
-
-    if (!ga_logging_enabled(s)) {
-        return;
-    }
-
-    level &= G_LOG_LEVEL_MASK;
-    if (g_strcmp0(domain, "syslog") == 0) {
-        system_log(level,level_str,msg);
-    } else if (level & s->log_level) {
-        file_log(s,level_str,msg);
-    }
-}
-
 static FILE *open_logfile(const char *logfile)
 {
     FILE *f;
