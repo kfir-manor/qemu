@@ -67,7 +67,6 @@ qga_ss.add(files(
   'main.c',
   'cutils.c',
   'log.c',
-  'qga-log.c',
 ))
 qga_ss.add(when: 'CONFIG_POSIX', if_true: files(
   'channel-posix.c',
