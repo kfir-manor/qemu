@@ -12,13 +12,12 @@ typedef struct LogConfig {
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
-typedef struct LogState {
-    FILE *log_file;
-    IVssBackupComponents **ppVssbc;
-} LogState;
-
 LogConfig *log_config;
 LogState *log_state;
+
+void freeze_log(){}
+
+void unfreeze_log(){}
 
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)
@@ -90,12 +89,16 @@ void inactive_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                      const gchar *message, gpointer user_data)
 {
-    FILE *log_file = (FILE *)user_data;
+    LogState *s = (LogState *)user_data;
+    if (!s->logging_enabled) {
+        return;
+    }
     const char *level_str = log_level_str(log_level);
-    file_log(log_file, level_str, message);
+    file_log(s->log_file, level_str, message);
+
 }
 
-void init_vss_log(void)
+LogState init_vss_log(void)
 {
     GLogLevelFlags inactive_mask;
     log_config = g_new0(LogConfig, 1);
@@ -120,6 +123,7 @@ void init_vss_log(void)
             }
             *log_file = *tmp_log_file;
     }
+    return log_state;
 }
 
 void cleanup_vss_log(void)
