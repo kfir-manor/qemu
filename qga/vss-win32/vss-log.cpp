@@ -7,8 +7,8 @@
 #define FULL_LOG_LEVEL_MASK 252
 
 
-LogConfig *log_config;
-LogState  *log_state;
+static LogConfig *log_config;
+static LogState  *log_state;
 
 void diable_log(void){
     log_state->logging_enabled=false;
