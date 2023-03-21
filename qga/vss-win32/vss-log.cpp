@@ -116,7 +116,7 @@ void init_vss_log(LogConfig *log_config, LogState *log_state)
                            strerror(errno));
                 return;
             }
-            *log_state->log_file = *tmp_log_file;
+            log_state->log_file = tmp_log_file;
     }
 }
 
