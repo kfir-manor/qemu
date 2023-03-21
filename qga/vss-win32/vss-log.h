@@ -1,11 +1,8 @@
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "QGA VSS SERVICE"
 
-struct LogConfig;
-struct LogState;
-
-typedef LogConfig;
-typedef LogState;
+typedef struct LogConfig LogConfig;
+typedef struct LogState LogState;
 
 LogConfig *log_config;
 LogState  *log_state;
