@@ -21,11 +21,11 @@ typedef struct LogState {
 LogConfig *log_config;
 LogState  *log_state;
 
-void freeze_log(void){
+void diable_log(void){
     log_state->logging_enabled=false;
 }
 
-void unfreeze_log(void){
+void enable_log(void){
     log_state->logging_enabled=true;
 }
 
