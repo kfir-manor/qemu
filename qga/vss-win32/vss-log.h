@@ -1,6 +1,8 @@
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "QGA VSS SERVICE"
 
+#define LOG_FILE_NAME "qga_vss_log.log"
+
 typedef struct LogConfig {
     char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
