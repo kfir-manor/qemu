@@ -375,7 +375,7 @@ void ga_unset_frozen(GAState *s)
      * in a frozen state at start up, do it now
      */
     if (s->deferred_options.log_filepath) {
-        s->log_file = ga_open_logfile(s->deferred_options.log_filepath);
+        s->log_file = open_logfile(s->deferred_options.log_filepath);
         if (!s->log_file) {
             s->log_file = stderr;
         }
@@ -1269,7 +1269,7 @@ void init_ga_log(GAState *s){
             become_daemon(config->pid_filepath);
         }
         if (config->log_filepath) {
-            FILE *log_file = ga_open_logfile(config->log_filepath);
+            FILE *log_file = open_logfile(config->log_filepath);
             if (!log_file) {
                 g_critical("unable to open specified log file: %s",
                            strerror(errno));
