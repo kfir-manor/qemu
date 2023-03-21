@@ -1,25 +1,32 @@
 #include "qemu/osdep.h"
 #include "vss-log.h"
 #include "vss-handles.h"
-#include "qemu\qga\log.h"
+#include "qga/log-utils.h"
 
-#define DEFAULT_LOG_LEVEL_MASK 28
+#define DEFAULT_LOG_LEVEL_MASK (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)
 #define FULL_LOG_LEVEL_MASK 252
 #define LOG_FILE_NAME "qga_vss_log.log"
 
+
 typedef struct LogConfig {
-    char log_filepath[MAX_PATH + 15];
+    char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
-LogConfig *log_config;
+typedef struct LogState {
+    FILE *log_file;
+    bool logging_enabled;
+} LogState;
 
-void freeze_log(LogState *log_state){
+LogConfig *log_config;
+LogState *log_state;
+
+void freeze_log(void){
     log_state->logging_enabled=false;
 }
 
-void unfreeze_log(LogState *log_state){
-        log_state->logging_enabled=true;
+void unfreeze_log(void){
+    log_state->logging_enabled=true;
 }
 
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
