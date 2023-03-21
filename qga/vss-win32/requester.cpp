@@ -51,7 +51,6 @@ static struct QGAVSSContext {
     int cFrozenVols;               /* number of frozen volumes */
 } vss_ctx;
 
-LogState *log_state;
 
 STDAPI requester_init(void)
 {
@@ -89,7 +88,7 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
-    log_state=init_vss_log();
+    init_vss_log();
     return S_OK;
 }
 
@@ -430,7 +429,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         goto out;
     }
 
-    log_state->logging_enabled=true;
+    unfreeze_log(log_state);
 
     /*
      * Start VSS quiescing operations.
@@ -468,7 +467,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
-        log_state->logging_enabled=false;
+        freeze_log(log_state);
         goto out1;
     }
 
@@ -488,7 +487,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
 out:
     if (vss_ctx.pVssbc) {
         vss_ctx.pVssbc->AbortBackup();
-        log_state->logging_enabled=false;
+        unfreeze_log(log_state);
     }
 
 out1:

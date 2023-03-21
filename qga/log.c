@@ -1,4 +1,4 @@
-#include <glib/gstdio.h>
+#include "log.h"
 
 static const char *ga_log_level_str(GLogLevelFlags level)
 {
@@ -52,15 +52,18 @@ static int glib_log_level_to_system(int level)
     }
 }
 
+#ifndef _WIN32
 static void system_log(GLogLevelFlags level,const char *level_str,const gchar *msg)
 {
-#ifndef _WIN32
     syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
-#else
-    ReportEvent(s->event_log, glib_log_level_to_system(level),
-                0, 1, NULL, 1, 0, &msg, NULL);
-#endif
 }
+#else
+static void system_log(Handle event_log,GLogLevelFlags level,const gchar *msg)
+{
+    ReportEvent(event_log, glib_log_level_to_system(level),
+                0, 1, NULL, 1, 0, &msg, NULL);
+}
+#endif
 
 static void file_log(FILE *log_file,const char *level_str,const gchar *msg)
 {

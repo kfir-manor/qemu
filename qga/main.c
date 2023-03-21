@@ -1204,13 +1204,17 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
 
     level &= G_LOG_LEVEL_MASK;
     if (g_strcmp0(domain, "syslog") == 0) {
-        system_log(level,level_str,msg);
+#ifndef _WIN32
+        system_log(GLogLevelFlags level,const char *level_str,const gchar *msg);
+#else
+        system_log(s->event_log,GLogLevelFlags level,const gchar *msg);
+#endif
     } else if (level & s->log_level) {
         file_log(s,level_str,msg);
     }
 }
 
-void init_qga_log(GAState *s){
+void init_ga_log(GAState *s){
     s->log_level = config->log_level;
     s->log_file = stderr;
 #ifdef CONFIG_FSFREEZE
@@ -1282,7 +1286,7 @@ static GAState *initialize_agent(GAConfig *config, int socket_activation)
 
     g_assert(ga_state == NULL);
 
-    init_vss_log(s);
+    init_ga_log(s);
     /* load persistent state from disk */
     if (!read_persistent_state(&s->pstate,
                                s->pstate_filepath,

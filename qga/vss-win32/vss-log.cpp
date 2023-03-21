@@ -1,7 +1,7 @@
 #include "qemu/osdep.h"
 #include "vss-log.h"
 #include "vss-handles.h"
-#include "qemu/qga/log.h"
+#include "qemu\qga\log.h"
 
 #define DEFAULT_LOG_LEVEL_MASK 28
 #define FULL_LOG_LEVEL_MASK 252
@@ -13,11 +13,14 @@ typedef struct LogConfig {
 } LogConfig;
 
 LogConfig *log_config;
-LogState *log_state;
 
-void freeze_log(){}
+void freeze_log(LogState *log_state){
+    log_state->logging_enabled=false;
+}
 
-void unfreeze_log(){}
+void unfreeze_log(LogState *log_state){
+        log_state->logging_enabled=true;
+}
 
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)
@@ -102,12 +105,12 @@ LogState init_vss_log(void)
 {
     GLogLevelFlags inactive_mask;
     log_config = g_new0(LogConfig, 1);
-    log_file = g_new0(FILE, 1);
-    log_file = stderr;
+    log_state = g_new0(LogState, 1);
+    log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     inactive_mask = get_inactive_mask(log_config->log_level_mask);
     g_log_set_handler(G_LOG_DOMAIN, log_config->log_level_mask,
-                      active_vss_log, log_file);
+                      active_vss_log, log_state->log_file);
     if (inactive_mask != 0) {
         g_log_set_handler(G_LOG_DOMAIN, inactive_mask,
                         inactive_vss_log, NULL);
@@ -121,7 +124,7 @@ LogState init_vss_log(void)
                            strerror(errno));
                 return;
             }
-            *log_file = *tmp_log_file;
+            *log_state->log_file = *tmp_log_file;
     }
     return log_state;
 }
@@ -129,5 +132,5 @@ LogState init_vss_log(void)
 void cleanup_vss_log(void)
 {
     g_free(log_config);
-    g_free(log_file);
+    g_free(log_state);
 }
