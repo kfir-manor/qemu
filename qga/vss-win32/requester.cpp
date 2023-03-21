@@ -429,7 +429,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         goto out;
     }
 
-    diable_log();
+    disable_log();
 
     /*
      * Start VSS quiescing operations.
