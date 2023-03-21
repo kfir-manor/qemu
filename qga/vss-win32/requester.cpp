@@ -128,7 +128,7 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
-    cleanup_vss_log(log_config,log_state);
+    cleanup_vss_log();
     return S_OK;
 }
 
