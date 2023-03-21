@@ -51,9 +51,6 @@ static struct QGAVSSContext {
     int cFrozenVols;               /* number of frozen volumes */
 } vss_ctx;
 
-LogConfig *log_config;
-LogState *log_state;
-
 STDAPI requester_init(void)
 {
     COMInitializer initializer; /* to call CoInitializeSecurity */
