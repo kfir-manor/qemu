@@ -487,7 +487,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
 out:
     if (vss_ctx.pVssbc) {
         vss_ctx.pVssbc->AbortBackup();
-        unfreeze_log();
+        unfreeze_log(log_state);
     }
 
 out1:
