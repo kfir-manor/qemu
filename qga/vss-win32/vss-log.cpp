@@ -5,6 +5,20 @@
 
 #define DEFAULT_LOG_LEVEL_MASK (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)
 #define FULL_LOG_LEVEL_MASK 252
+#define LOG_FILE_NAME "qga_vss_log.log"
+
+typedef struct LogConfig {
+    char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
+    GLogLevelFlags log_level_mask;
+} LogConfig;
+
+typedef struct LogState {
+    FILE *log_file;
+    bool logging_enabled;
+} LogState;
+
+LogConfig *log_config;
+LogState *log_state;
 
 void diable_log(void){
     log_state->logging_enabled=false;
