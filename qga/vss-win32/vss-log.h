@@ -8,5 +8,5 @@ LogState  *log_state;
 
 void init_vss_log(void);
 void cleanup_vss_log(void);
-void freeze_log(void);
-void unfreeze_log(void);
+void disable_log(void);
+void enable_log(void);
