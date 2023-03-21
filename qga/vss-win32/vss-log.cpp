@@ -6,11 +6,11 @@
 #define DEFAULT_LOG_LEVEL_MASK (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)
 #define FULL_LOG_LEVEL_MASK 252
 
-void diable_log(LogState *log_state){
+void diable_log(void){
     log_state->logging_enabled=false;
 }
 
-void enable_log(LogState *log_state){
+void enable_log(void){
     log_state->logging_enabled=true;
 }
 
@@ -93,11 +93,11 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 
 }
 
-void init_vss_log(LogConfig *log_config, LogState *log_state)
+void init_vss_log(void)
 {
     GLogLevelFlags inactive_mask;
-    log_config = g_new0(LogConfig, 1);
-    log_state = g_new0(LogState, 1);
+    LogConfig log_config = g_new0(LogConfig, 1);
+    LogState log_state = g_new0(LogState, 1);
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     inactive_mask = get_inactive_mask(log_config->log_level_mask);
@@ -116,12 +116,12 @@ void init_vss_log(LogConfig *log_config, LogState *log_state)
                            strerror(errno));
                 return;
             }
-            log_state->log_file = tmp_log_file;
+            *log_state->log_file = *tmp_log_file;
     }
 }
 
-void cleanup_vss_log(LogConfig *log_config, LogState *log_state)
+void cleanup_vss_log(void)
 {
-    g_free(log_state);
     g_free(log_config);
+    g_free(log_state);
 }
