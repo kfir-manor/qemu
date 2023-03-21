@@ -1,3 +1,4 @@
+#include <glib/gstdio.h>
 #include "log-utils.h"
 
 const char *ga_log_level_str(GLogLevelFlags level)
