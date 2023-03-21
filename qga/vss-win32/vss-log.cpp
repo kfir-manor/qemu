@@ -6,6 +6,9 @@
 #define DEFAULT_LOG_LEVEL_MASK (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)
 #define FULL_LOG_LEVEL_MASK 252
 
+static LogConfig *log_config;
+static LogState  *log_state;
+
 void diable_log(void){
     log_state->logging_enabled=false;
 }
