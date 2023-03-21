@@ -8,18 +8,18 @@
 #define LOG_FILE_NAME "qga_vss_log.log"
 
 
-struct LogConfig {
+typedef struct LogConfig {
     char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
-struct LogState {
+typedef struct LogState {
     FILE *log_file;
     bool logging_enabled;
 } LogState;
 
 LogConfig *log_config;
-LogState *log_state;
+LogState  *log_state;
 
 void freeze_log(void){
     log_state->logging_enabled=false;
