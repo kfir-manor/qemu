@@ -4,8 +4,8 @@
 typedef struct LogConfig LogConfig;
 typedef struct LogState LogState;
 
-extern LogConfig *log_config;
-extern LogState *log_state;
+LogConfig *log_config;
+LogState *log_state;
 
 
 void init_vss_log(void);

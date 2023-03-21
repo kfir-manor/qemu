@@ -8,12 +8,12 @@
 #define LOG_FILE_NAME "qga_vss_log.log"
 
 
-typedef struct LogConfig {
+static struct LogConfig {
     char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
 } LogConfig;
 
-typedef struct LogState {
+static struct LogState {
     FILE *log_file;
     bool logging_enabled;
 } LogState;
