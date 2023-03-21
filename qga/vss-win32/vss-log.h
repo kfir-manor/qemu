@@ -12,6 +12,8 @@ typedef struct LogState {
     bool logging_enabled;
 } LogState;
 
+LogConfig *log_config;
+LogState  *log_state;
 
 void init_vss_log(void);
 void cleanup_vss_log(void);
