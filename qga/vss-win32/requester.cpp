@@ -58,7 +58,7 @@ STDAPI requester_init(void)
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
         RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);
 
-    init_vss_log(log_config,log_state);
+    init_vss_log();
 
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
