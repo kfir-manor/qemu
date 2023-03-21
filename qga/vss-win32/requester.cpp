@@ -430,7 +430,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         goto out;
     }
 
-    disable_log(log_state);
+    disable_log();
 
     /*
      * Start VSS quiescing operations.
@@ -468,7 +468,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
-        enable_log(log_state);
+        enable_log();
         goto out1;
     }
 
@@ -488,7 +488,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
 out:
     if (vss_ctx.pVssbc) {
         vss_ctx.pVssbc->AbortBackup();
-        enable_log(log_state);
+        enable_log();
     }
 
 out1:
