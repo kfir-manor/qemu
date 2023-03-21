@@ -51,6 +51,8 @@ static struct QGAVSSContext {
     int cFrozenVols;               /* number of frozen volumes */
 } vss_ctx;
 
+LogConfig *log_config;
+LogState *log_state;
 
 STDAPI requester_init(void)
 {
@@ -58,6 +60,9 @@ STDAPI requester_init(void)
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
         RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);
+
+    init_vss_log(log_config,log_state);
+
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
         return hr;
@@ -88,7 +93,6 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
-    init_vss_log();
     return S_OK;
 }
 
@@ -127,7 +131,7 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
-    cleanup_vss_log();
+    cleanup_vss_log(log_config,log_state);
     return S_OK;
 }
 

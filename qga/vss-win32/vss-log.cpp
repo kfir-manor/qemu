@@ -93,7 +93,7 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 
 }
 
-void init_vss_log(void)
+void init_vss_log(LogConfig *log_config, LogState *log_state)
 {
     GLogLevelFlags inactive_mask;
     LogConfig log_config = g_new0(LogConfig, 1);
@@ -120,8 +120,8 @@ void init_vss_log(void)
     }
 }
 
-void cleanup_vss_log(void)
+void cleanup_vss_log(LogConfig *log_config, LogState *log_state)
 {
-    g_free(log_config);
     g_free(log_state);
+    g_free(log_config);
 }
