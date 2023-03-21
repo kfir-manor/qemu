@@ -1,4 +1,4 @@
-#include "log.h"
+#include "log-utils.h"
 
 static const char *ga_log_level_str(GLogLevelFlags level)
 {
