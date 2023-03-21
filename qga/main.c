@@ -14,7 +14,7 @@
 #include "qemu/osdep.h"
 #include <getopt.h>
 #include <glib/gstdio.h>
-#include "log.h"
+#include "log-utils.h"
 #ifndef _WIN32
 #include <syslog.h>
 #include <sys/wait.h>
@@ -1207,7 +1207,7 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
 #ifndef _WIN32
         system_log(GLogLevelFlags level,const char *level_str,const gchar *msg);
 #else
-        system_log(s->event_log,GLogLevelFlags level,const gchar *msg);
+        win_system_log(s->event_log,GLogLevelFlags level,const gchar *msg);
 #endif
     } else if (level & s->log_level) {
         file_log(s,level_str,msg);
