@@ -1,4 +1,3 @@
-#include <glib/gstdio.h>
 #include "qemu/osdep.h"
 
 const char *log_level_str(GLogLevelFlags level);
