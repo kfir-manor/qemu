@@ -110,8 +110,8 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 void init_vss_log(void)
 {
     GLogLevelFlags inactive_mask;
-    LogConfig log_config = g_new0(LogConfig, 1);
-    LogState log_state = g_new0(LogState, 1);
+    log_config = g_new0(LogConfig, 1);
+    log_state = g_new0(LogState, 1);
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     inactive_mask = get_inactive_mask(log_config->log_level_mask);
