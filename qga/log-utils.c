@@ -1,6 +1,6 @@
 #include "log-utils.h"
 
-static const char *ga_log_level_str(GLogLevelFlags level)
+const char *ga_log_level_str(GLogLevelFlags level)
 {
     switch (level & G_LOG_LEVEL_MASK) {
     case G_LOG_LEVEL_ERROR:
@@ -20,7 +20,7 @@ static const char *ga_log_level_str(GLogLevelFlags level)
     }
 }
 
-static int glib_log_level_to_system(int level)
+int glib_log_level_to_system(int level)
 {
     switch (level) {
 #ifndef _WIN32
@@ -53,19 +53,19 @@ static int glib_log_level_to_system(int level)
 }
 
 #ifndef _WIN32
-static void system_log(GLogLevelFlags level,const char *level_str,const gchar *msg)
+void system_log(GLogLevelFlags level,const char *level_str,const gchar *msg)
 {
     syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
 }
 #else
-static void win_system_log(Handle event_log,GLogLevelFlags level,const gchar *msg)
+void win_system_log(Handle event_log,GLogLevelFlags level,const gchar *msg)
 {
     ReportEvent(event_log, glib_log_level_to_system(level),
                 0, 1, NULL, 1, 0, &msg, NULL);
 }
 #endif
 
-static void file_log(FILE *log_file,const char *level_str,const gchar *msg)
+void file_log(FILE *log_file,const char *level_str,const gchar *msg)
 {
         g_autoptr(GDateTime) now = g_date_time_new_now_utc();
         g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
@@ -73,7 +73,7 @@ static void file_log(FILE *log_file,const char *level_str,const gchar *msg)
         fflush(log_file);
 }
 
-static FILE *open_logfile(const char *logfile)
+FILE *open_logfile(const char *logfile)
 {
     FILE *f;
 
