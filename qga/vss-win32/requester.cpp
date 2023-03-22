@@ -277,7 +277,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     VSS_BACKUP_TYPE vss_bt = get_vss_backup_type();
 
     g_info("start requester_freeze");
-
+    g_warning("start requester_freeze this is a warning");
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
         return;
