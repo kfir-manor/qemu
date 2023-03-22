@@ -1,6 +1,6 @@
 #include "log-utils.h"
 
-const char *ga_log_level_str(GLogLevelFlags level)
+const char *log_level_str(GLogLevelFlags level)
 {
     switch (level & G_LOG_LEVEL_MASK) {
     case G_LOG_LEVEL_ERROR:
