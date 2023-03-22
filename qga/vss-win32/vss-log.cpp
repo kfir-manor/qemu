@@ -1,7 +1,6 @@
-#include "qemu/osdep.h"
-#include "vss-log.h"
 #include "vss-handles.h"
 #include "qga/log-utils.h"
+#include "vss-log.h"
 
 #define DEFAULT_LOG_LEVEL_MASK 28
 #define FULL_LOG_LEVEL_MASK 252
