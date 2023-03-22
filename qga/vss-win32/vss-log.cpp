@@ -19,8 +19,8 @@ typedef struct LogState {
     bool logging_enabled;
 } LogState;
 
-LogConfig *log_config;
-LogState *log_state;
+static LogConfig *log_config;
+static LogState *log_state;
 
 void disable_log(void){
     log_state->logging_enabled=false;
