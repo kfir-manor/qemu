@@ -84,9 +84,9 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                      const gchar *message, gpointer user_data)
 {
     LogState *s = (LogState *)user_data;
-    if (!s->logging_enabled) {
-        return;
-    }
+    //if (!s->logging_enabled) {
+    //    return;
+    //}
     const char *level_str = log_level_str(log_level);
     file_log(s->log_file, level_str, message);
 
