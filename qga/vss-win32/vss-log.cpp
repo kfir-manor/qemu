@@ -5,7 +5,7 @@ extern "C" {
 }
 #include "vss-log.h"
 
-#define DEFAULT_LOG_LEVEL_MASK 28
+#define DEFAULT_LOG_LEVEL_MASK (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING)
 #define FULL_LOG_LEVEL_MASK 252
 #define LOG_FILE_NAME "qga_vss_log.log"
 
