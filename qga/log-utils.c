@@ -1,5 +1,7 @@
 #include "log-utils.h"
-
+#ifndef _WIN32
+#include <syslog.h>
+#endif
 const char *log_level_str(GLogLevelFlags level)
 {
     switch (level & G_LOG_LEVEL_MASK) {
