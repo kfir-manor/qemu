@@ -1,5 +1,4 @@
 #include "qemu/osdep.h"
-#include <winnt.h>
 #ifndef _WIN32
 #include <syslog.h>
 #endif
