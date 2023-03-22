@@ -83,7 +83,7 @@ void inactive_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                      const gchar *message, gpointer user_data)
 {
-    fprint("im inside log");
+    printf("im inside log");
     LogState *s = (LogState *)user_data;
     if (!s->logging_enabled) {
         return;
