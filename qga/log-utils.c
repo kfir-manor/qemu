@@ -69,10 +69,13 @@ void win_system_log(HANDLE event_log,GLogLevelFlags level,const gchar *msg)
 
 void file_log(FILE *log_file,const char *level_str,const gchar *msg)
 {
-        g_autoptr(GDateTime) now = g_date_time_new_now_utc();
-        g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
-        fprintf(log_file, "%s: %s: %s\n", nowstr, level_str, msg);
-        fflush(log_file);
+    printf("time\n");
+    g_autoptr(GDateTime) now = g_date_time_new_now_utc();
+    g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
+    printf("open\n");
+    fprintf(log_file, "%s: %s: %s\n", nowstr, level_str, msg);
+    printf("flush\n");
+    fflush(log_file);
 }
 
 FILE *open_logfile(const char *logfile)
