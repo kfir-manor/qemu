@@ -1,7 +1,5 @@
 #include "qemu/osdep.h"
-#ifndef _WIN32
-#include <syslog.h>
-#endif
+
 
 const char *log_level_str(GLogLevelFlags level);
 int glib_log_level_to_system(int level);
