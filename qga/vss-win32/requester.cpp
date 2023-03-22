@@ -16,6 +16,7 @@
 #include "install.h"
 #include <vswriter.h>
 #include <vsbackup.h>
+#include "registry.h"
 #include "vss-log.h"
 
 /* Max wait time for frozen event (VSS can only hold writes for 10 seconds) */
