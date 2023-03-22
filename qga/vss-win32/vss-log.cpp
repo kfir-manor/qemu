@@ -119,7 +119,7 @@ void init_vss_log(void)
                            strerror(errno));
                 return;
             }
-            log_state->log_file = tmp_log_file;
+            *(log_state->log_file) = *tmp_log_file;
     }
 }
 
