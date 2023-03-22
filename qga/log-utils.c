@@ -1,7 +1,3 @@
-
-#ifndef _WIN32
-#include <syslog.h>
-#endif
 #include "log-utils.h"
 
 const char *ga_log_level_str(GLogLevelFlags level)
