@@ -1214,7 +1214,12 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
     }
 }
 
-void init_ga_log(GAState *s){
+static GAState *initialize_agent(GAConfig *config, int socket_activation)
+{
+    GAState *s = g_new0(GAState, 1);
+
+    g_assert(ga_state == NULL);
+
     s->log_level = config->log_level;
     s->log_file = stderr;
 #ifdef CONFIG_FSFREEZE
@@ -1278,15 +1283,6 @@ void init_ga_log(GAState *s){
             s->log_file = log_file;
         }
     }
-}
-
-static GAState *initialize_agent(GAConfig *config, int socket_activation)
-{
-    GAState *s = g_new0(GAState, 1);
-
-    g_assert(ga_state == NULL);
-
-    init_ga_log(s);
     /* load persistent state from disk */
     if (!read_persistent_state(&s->pstate,
                                s->pstate_filepath,
