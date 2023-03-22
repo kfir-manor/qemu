@@ -514,10 +514,10 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
 out:
     if (vss_ctx.pVssbc) {
         vss_ctx.pVssbc->AbortBackup();
-        enable_log();
     }
 
 out1:
+    enable_log();
     requester_cleanup();
     CoUninitialize();
 
