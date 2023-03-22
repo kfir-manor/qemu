@@ -14,7 +14,6 @@
 #include "qemu/osdep.h"
 #include <getopt.h>
 #include <glib/gstdio.h>
-#include "log-utils.h"
 #ifndef _WIN32
 #include <syslog.h>
 #include <sys/wait.h>
@@ -279,10 +278,115 @@ QEMU_HELP_BOTTOM "\n"
     dfl_pathnames.state_dir);
 }
 
+static const char *ga_log_level_str(GLogLevelFlags level)
+{
+    switch (level & G_LOG_LEVEL_MASK) {
+    case G_LOG_LEVEL_ERROR:
+        return "error";
+    case G_LOG_LEVEL_CRITICAL:
+        return "critical";
+    case G_LOG_LEVEL_WARNING:
+        return "warning";
+    case G_LOG_LEVEL_MESSAGE:
+        return "message";
+    case G_LOG_LEVEL_INFO:
+        return "info";
+    case G_LOG_LEVEL_DEBUG:
+        return "debug";
+    default:
+        return "user";
+    }
+}
+
+bool ga_logging_enabled(GAState *s)
+{
+    return s->logging_enabled;
+}
+
+void ga_disable_logging(GAState *s)
+{
+    s->logging_enabled = false;
+}
+
+void ga_enable_logging(GAState *s)
+{
+    s->logging_enabled = true;
+}
+
+static int glib_log_level_to_system(int level)
+{
+    switch (level) {
+#ifndef _WIN32
+    case G_LOG_LEVEL_ERROR:
+        return LOG_ERR;
+    case G_LOG_LEVEL_CRITICAL:
+        return LOG_CRIT;
+    case G_LOG_LEVEL_WARNING:
+        return LOG_WARNING;
+    case G_LOG_LEVEL_MESSAGE:
+        return LOG_NOTICE;
+    case G_LOG_LEVEL_DEBUG:
+        return LOG_DEBUG;
+    case G_LOG_LEVEL_INFO:
+    default:
+        return LOG_INFO;
+#else
+    case G_LOG_LEVEL_ERROR:
+    case G_LOG_LEVEL_CRITICAL:
+        return EVENTLOG_ERROR_TYPE;
+    case G_LOG_LEVEL_WARNING:
+        return EVENTLOG_WARNING_TYPE;
+    case G_LOG_LEVEL_MESSAGE:
+    case G_LOG_LEVEL_INFO:
+    case G_LOG_LEVEL_DEBUG:
+    default:
+        return EVENTLOG_INFORMATION_TYPE;
+#endif
+    }
+}
+
+static void ga_log(const gchar *domain, GLogLevelFlags level,
+                   const gchar *msg, gpointer opaque)
+{
+    GAState *s = opaque;
+    const char *level_str = ga_log_level_str(level);
+
+    if (!ga_logging_enabled(s)) {
+        return;
+    }
+
+    level &= G_LOG_LEVEL_MASK;
+    if (g_strcmp0(domain, "syslog") == 0) {
+#ifndef _WIN32
+        syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
+#else
+        ReportEvent(s->event_log, glib_log_level_to_system(level),
+                    0, 1, NULL, 1, 0, &msg, NULL);
+#endif
+    } else if (level & s->log_level) {
+        g_autoptr(GDateTime) now = g_date_time_new_now_utc();
+        g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
+        fprintf(s->log_file, "%s: %s: %s\n", nowstr, level_str, msg);
+        fflush(s->log_file);
+    }
+}
 
 void ga_set_response_delimited(GAState *s)
 {
     s->delimit_response = true;
+}
+
+static FILE *ga_open_logfile(const char *logfile)
+{
+    FILE *f;
+
+    f = fopen(logfile, "a");
+    if (!f) {
+        return NULL;
+    }
+
+    qemu_set_cloexec(fileno(f));
+    return f;
 }
 
 static gint ga_strcmp(gconstpointer str1, gconstpointer str2)
@@ -375,7 +479,7 @@ void ga_unset_frozen(GAState *s)
      * in a frozen state at start up, do it now
      */
     if (s->deferred_options.log_filepath) {
-        s->log_file = open_logfile(s->deferred_options.log_filepath);
+        s->log_file = ga_open_logfile(s->deferred_options.log_filepath);
         if (!s->log_file) {
             s->log_file = stderr;
         }
@@ -1192,32 +1296,6 @@ static bool check_is_frozen(GAState *s)
     return false;
 }
 
-bool ga_logging_enabled(GAState s){
-    return s->logging_enabled;
-}
-
-static void ga_log(const gchar *domain, GLogLevelFlags level,
-                   const gchar *msg, gpointer opaque)
-{
-    GAState *s = opaque;
-    const char *level_str = ga_log_level_str(level);
-
-    if (!ga_logging_enabled(s)) {
-        return;
-    }
-
-    level &= G_LOG_LEVEL_MASK;
-    if (g_strcmp0(domain, "syslog") == 0) {
-#ifndef _WIN32
-        system_log(level,level_str,msg);
-#else
-        win_system_log(s->event_log,level,*msg);
-#endif
-    } else if (level & s->log_level) {
-        file_log(s->log_file,level_str,msg);
-    }
-}
-
 static GAState *initialize_agent(GAConfig *config, int socket_activation)
 {
     GAState *s = g_new0(GAState, 1);
@@ -1278,7 +1356,7 @@ static GAState *initialize_agent(GAConfig *config, int socket_activation)
             become_daemon(config->pid_filepath);
         }
         if (config->log_filepath) {
-            FILE *log_file = open_logfile(config->log_filepath);
+            FILE *log_file = ga_open_logfile(config->log_filepath);
             if (!log_file) {
                 g_critical("unable to open specified log file: %s",
                            strerror(errno));
@@ -1287,6 +1365,7 @@ static GAState *initialize_agent(GAConfig *config, int socket_activation)
             s->log_file = log_file;
         }
     }
+
     /* load persistent state from disk */
     if (!read_persistent_state(&s->pstate,
                                s->pstate_filepath,
