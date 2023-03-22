@@ -1,5 +1,7 @@
 #include "vss-handles.h"
+extern "C" {
 #include "qga/log-utils.h"
+}
 #include "vss-log.h"
 
 #define DEFAULT_LOG_LEVEL_MASK 28
