@@ -1,4 +1,5 @@
 #include "vss-handles.h"
+#include "registry.h"
 extern "C" {
 #include "qga/log-utils.h"
 }
@@ -28,23 +29,6 @@ void diable_log(void){
 void enable_log(void){
     log_state->logging_enabled=true;
 }
-
-DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
-                          DWORD defaultData)
-{
-    DWORD regGetValueError;
-    DWORD dwordData;
-    DWORD dataSize = sizeof(DWORD);
-
-    regGetValueError = RegGetValue(baseKey, subKey, valueName, RRF_RT_DWORD,
-                                   NULL, &dwordData, &dataSize);
-    if (regGetValueError  != ERROR_SUCCESS) {
-        return defaultData;
-    }
-    return dwordData;
-}
-
-
 
 DWORD get_log_level(void)
 {
