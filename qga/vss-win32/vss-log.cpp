@@ -1,4 +1,6 @@
 #include "vss-handles.h"
+#include "qemu/osdep.h"
+#include <glib/gstdio.h>
 #include "qga/log-utils.h"
 #include "vss-log.h"
 
