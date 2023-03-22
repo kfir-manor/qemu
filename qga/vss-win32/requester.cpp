@@ -93,6 +93,8 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
+    init_vss_log();
+
     return S_OK;
 }
 
