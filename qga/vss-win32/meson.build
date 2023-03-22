@@ -1,6 +1,3 @@
-env = environment()
-env.set('G_LOG_DOMAIN', 'QGA VSS SERVICE')
-
 link_args = cc.get_supported_link_arguments([
   '-fstack-protector-all',
   '-fstack-protector-strong',
@@ -10,7 +7,7 @@ link_args = cc.get_supported_link_arguments([
 
 qga_vss = shared_module(
   'qga-vss',
-  ['requester.cpp', 'provider.cpp', 'install.cpp','vss-log.cpp', genh],
+  ['requester.cpp', 'provider.cpp', 'install.cpp','vss-log.cpp','log-utils.h', genh],
   name_prefix: '',
   cpp_args: ['-Wno-unknown-pragmas', '-Wno-delete-non-virtual-dtor', '-Wno-non-virtual-dtor'],
   link_args: link_args,
