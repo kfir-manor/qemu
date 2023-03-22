@@ -1,5 +1,4 @@
-#include "qemu/osdep.h"
-#include <glib/gstdio.h>
+
 #ifndef _WIN32
 #include <syslog.h>
 #endif
