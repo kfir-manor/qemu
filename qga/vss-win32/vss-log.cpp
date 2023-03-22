@@ -89,7 +89,7 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
         return;
     }
     const char *level_str = log_level_str(log_level);
-    fprint("im inside log opening file");
+    printf("im inside log opening file");
     file_log(s->log_file, level_str, message);
 
 }
