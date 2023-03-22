@@ -1,5 +1,4 @@
 #include "qemu/osdep.h"
-#include <glib/gstdio.h>
 
 #ifdef _WIN32
 #include <dbt.h>
