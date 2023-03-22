@@ -1,6 +1,10 @@
 #include "qemu/osdep.h"
 #include <glib/gstdio.h>
 
+#ifdef _WIN32
+#include <dbt.h>
+#endif
+
 const char *log_level_str(GLogLevelFlags level);
 int glib_log_level_to_system(int level);
 FILE *open_logfile(const char *logfile);
