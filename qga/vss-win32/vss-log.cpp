@@ -22,7 +22,7 @@ typedef struct LogState {
 LogConfig *log_config;
 LogState *log_state;
 
-void diable_log(void){
+void disable_log(void){
     log_state->logging_enabled=false;
 }
 
