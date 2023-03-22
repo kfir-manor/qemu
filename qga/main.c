@@ -1192,6 +1192,10 @@ static bool check_is_frozen(GAState *s)
     return false;
 }
 
+bool ga_logging_enabled(GAState s){
+    return s->logging_enabled;
+}
+
 static void ga_log(const gchar *domain, GLogLevelFlags level,
                    const gchar *msg, gpointer opaque)
 {
@@ -1205,12 +1209,12 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
     level &= G_LOG_LEVEL_MASK;
     if (g_strcmp0(domain, "syslog") == 0) {
 #ifndef _WIN32
-        system_log(GLogLevelFlags level,const char *level_str,const gchar *msg);
+        system_log(level,level_str,msg);
 #else
-        win_system_log(s->event_log,GLogLevelFlags level,const gchar *msg);
+        win_system_log(s->event_log,level,*msg);
 #endif
     } else if (level & s->log_level) {
-        file_log(s,level_str,msg);
+        file_log(s->log_file,level_str,msg);
     }
 }
 
