@@ -83,7 +83,10 @@ FILE *open_logfile(const char *logfile)
     if (!f) {
         return NULL;
     }
-
+#ifndef _WIN32
     qemu_set_cloexec(fileno(f));
+#else
+    fileno(f);
+#endif
     return f;
 }
