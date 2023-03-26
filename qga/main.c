@@ -37,6 +37,7 @@
 #include "qga/vss-win32.h"
 #endif
 #include "commands-common.h"
+#include "log-utils.h"
 
 #ifndef _WIN32
 #ifdef CONFIG_BSD
