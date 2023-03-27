@@ -9,6 +9,12 @@ extern "C" {
 #define FULL_LOG_LEVEL_MASK G_LOG_LEVEL_MASK
 #define LOG_FILE_NAME "qga_vss_log.log"
 
+typedef struct LogStackNode{
+    LogStackNode *prev_node;
+    const char *msg;
+    GLogLevelFlags log_level;
+}
+
 typedef struct LogConfig {
     char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
@@ -17,7 +23,7 @@ typedef struct LogConfig {
 typedef struct LogState {
     FILE *log_file;
     bool logging_enabled;
-    std:stack<char *> log_message_stack; 
+    LogStackNode log_message_stack; 
 } LogState;
 
 static LogConfig *log_config;
@@ -29,6 +35,14 @@ void disable_log(void){
 
 void enable_log(void){
     log_state->logging_enabled=true;
+    while(log_state->log_message_stack->prev_node)
+}
+void add_log_stack_node(LogState *log_state,GLogLevelFlags log_level,const gchar *message){
+    LogStackNode *log_stack_node=g_new0(LogStackNode,1);
+    log_stack_node->prev_node=log_state->log_message_stack;
+    log_stack_node->msg=message;
+    log_stack_node->log_level=log_level;
+    log_state->log_message_stack
 }
 
 DWORD get_log_level(void)
@@ -86,7 +100,7 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 {
     LogState *s = (LogState *)user_data;
     if (!s->logging_enabled) {
-
+        add_log_stack_node(s,log_level,message);
         return;
     }
     const char *level_str = log_level_str(log_level);
