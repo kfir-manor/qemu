@@ -130,7 +130,7 @@ void init_vss_log(void)
     g_error("im error");
 }
 
-void g_critical_error_get_pretty(int win32_err,gchar *fmt,...){
+void g_critical_error_get_pretty(int win32_err,const gchar *fmt,...){
     va_list ap;
     gchar *msg;
     va_start(ap, fmt);
