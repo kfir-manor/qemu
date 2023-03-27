@@ -329,6 +329,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     hr = vss_ctx.pVssbc->InitializeForBackup();
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to initialize for backup");
+        g_critical("failed to initialize for backup");
         goto out;
     }
 
