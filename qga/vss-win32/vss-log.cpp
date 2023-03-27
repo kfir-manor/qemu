@@ -120,7 +120,7 @@ void init_vss_log(void)
     }
 }
 
-void g_critical_error_pretty(int win32_err,const char *fmt,...) {
+void g_critical_error_pretty(int win32_err,const char *fmt,...) __attribute__ ((format (printf, 2, 3))){
     va_list ap;
     va_start(ap, fmt);
     char *suffix = g_win32_error_message(win32_err);
