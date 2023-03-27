@@ -126,7 +126,7 @@ void init_vss_log(void)
     g_message("im message");
     g_debug("im debug");
     g_critical("im critical");
-    g_critical_error_get_pretty(0,"im critical %s","error");
+    g_critical_error_get_pretty(0,"im critical error");
     g_error("im error");
 }
 
