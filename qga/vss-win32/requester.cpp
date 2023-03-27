@@ -355,6 +355,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup context");
+        g_critical("failed to set backup context");
         goto out;
     }
 
@@ -364,6 +365,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to gather writer metadata");
+        g_critical("failed to gather writer metadata");
         goto out;
     }
 
