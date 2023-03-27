@@ -127,7 +127,7 @@ void init_vss_log(void)
     g_debug("im debug");
     g_critical("im critical");
     char err_msg[64];
-    g_critical_error("im critical error",0);
+    g_critical_error(0,"im critical error");
     g_error("im error");
 }
 
