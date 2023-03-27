@@ -5,6 +5,7 @@ void init_vss_log(void);
 void cleanup_vss_log(void);
 void disable_log(void);
 void enable_log(void);
-//void g_critical_error_pretty(int win32_err,const char *msg);
-void g_critical_error_pretty(int win32_err,const char *fmt,...) __attribute__ ((format (gnu_printf, 2, 3)));
+#define g_critical_error_pretty(win32_err,fmt,...) \
+    g_critical_error_pretty_internal((win32_err), (fmt), ## __VA_ARGS__)
+void g_critical_error_pretty_internal(int win32_err,const char *fmt,...) G_GNUC_PRINTF(2, 3);
 
