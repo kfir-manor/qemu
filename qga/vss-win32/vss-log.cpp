@@ -120,15 +120,17 @@ void init_vss_log(void)
     }
 }
 void g_critical_error_pretty_format(int win32_err,const char *msg){
+    char *suffix = g_win32_error_message(win32_err);
+    g_critical("%s: %s", msg,suffix);
+    g_free(suffix);
 }
+
 void g_critical_error_pretty_format(int win32_err,const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
-    char *suffix = g_win32_error_message(win32_err);
     char *msg =g_strdup_vprintf(fmt, ap);
-    g_critical("%s: %s", msg,suffix);
+    g_critical_error_pretty_format(win32_err,msg);
     va_end(ap);
-    g_free(suffix);
 }   
 
 void cleanup_vss_log(void)
