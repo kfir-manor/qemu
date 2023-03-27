@@ -300,18 +300,21 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     if (!vss_ctx.hEventFrozen) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_FROZEN);
+        g_critical("failed to create event %s", EVENT_NAME_FROZEN);
         goto out;
     }
     vss_ctx.hEventThaw = CreateEvent(&sa, TRUE, FALSE, EVENT_NAME_THAW);
     if (!vss_ctx.hEventThaw) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_THAW);
+        g_critical("failed to create event %s", EVENT_NAME_THAW);
         goto out;
     }
     vss_ctx.hEventTimeout = CreateEvent(&sa, TRUE, FALSE, EVENT_NAME_TIMEOUT);
     if (!vss_ctx.hEventTimeout) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_TIMEOUT);
+        g_critical("failed to create event %s", EVENT_NAME_TIMEOUT);
         goto out;
     }
 
@@ -319,6 +322,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     hr = pCreateVssBackupComponents(&vss_ctx.pVssbc);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to create VSS backup components");
+        g_critical("failed to create VSS backup components");
         goto out;
     }
 
