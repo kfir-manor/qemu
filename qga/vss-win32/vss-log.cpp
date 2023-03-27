@@ -123,14 +123,14 @@ void init_vss_log(void)
     }
     g_warning("im warning");
     g_info("im info");
-    g_message("im message")
+    g_message("im message");
     g_debug("im debug");
     g_critical("im critical");
     g_critical_error_get_pretty(0,"im critical %s","error");
     g_error("im error");
 }
 
-void g_critical_error_get_pretty(int win32_err,char *fmt,...){
+void g_critical_error_get_pretty(int win32_err,gchar *fmt,...){
     va_list ap;
     char *msg;
     va_start(ap, fmt);
