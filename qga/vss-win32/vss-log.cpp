@@ -123,6 +123,12 @@ void init_vss_log(void)
     }
 }
 
+void g_critical_error(char *msg,int win32_err){
+    char *suffix=g_win32_error_message(win32_err);
+    g_critical("%s: %s",msg,suffix);
+    g_free(suffix);
+}
+
 void cleanup_vss_log(void)
 {
     g_free(log_config);
