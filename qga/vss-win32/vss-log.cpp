@@ -129,7 +129,9 @@ void g_critical_error_pretty_format(int win32_err,const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
     char *msg =g_strdup_vprintf(fmt, ap);
-    g_critical_error_pretty_format(win32_err,msg);
+    char *suffix = g_win32_error_message(win32_err);
+    g_critical("%s: %s", msg,suffix);
+    g_free(suffix);
     va_end(ap);
 }   
 
