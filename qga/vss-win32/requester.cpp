@@ -597,9 +597,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         err_set(errset, hr, "failed to do snapshot set");
         abort_vss_then_log(hr, "failed to do snapshot set");
     }
-    vss_ctx.pVssbc->AbortBackup();
-    enable_log();
-    g_critical_error_pretty(hr,err_msg);
+
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
 
