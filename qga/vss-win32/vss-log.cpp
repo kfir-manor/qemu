@@ -132,7 +132,7 @@ void init_vss_log(void)
 
 void g_critical_error_get_pretty(int win32_err,gchar *fmt,...){
     va_list ap;
-    char *msg;
+    gchar *msg;
     va_start(ap, fmt);
     char *suffix = g_win32_error_message(win32_err);
     msg = g_strdup_vprintf(fmt, ap);
