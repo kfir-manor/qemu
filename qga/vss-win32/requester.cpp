@@ -523,7 +523,7 @@ out1:
     enable_log();
     requester_cleanup();
     CoUninitialize();
-    g_debug("requester_freeze end")
+    g_debug("requester_freeze end");
 }
 
 
