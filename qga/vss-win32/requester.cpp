@@ -173,7 +173,6 @@ static void AddComponents(ErrorSet *errset)
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to get writer metadata count");
-        g_critical_error("failed to get writer metadata count",hr);
         goto out;
     }
 
@@ -182,7 +181,6 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get writer metadata of %d/%d",
                              i, cWriters);
-            g_critical_error("failed to get writer metadata count",hr);
             goto out;
         }
 
@@ -302,21 +300,18 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     if (!vss_ctx.hEventFrozen) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_FROZEN);
-        g_critical("failed to create event %s", EVENT_NAME_FROZEN);
         goto out;
     }
     vss_ctx.hEventThaw = CreateEvent(&sa, TRUE, FALSE, EVENT_NAME_THAW);
     if (!vss_ctx.hEventThaw) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_THAW);
-        g_critical("failed to create event %s", EVENT_NAME_THAW);
         goto out;
     }
     vss_ctx.hEventTimeout = CreateEvent(&sa, TRUE, FALSE, EVENT_NAME_TIMEOUT);
     if (!vss_ctx.hEventTimeout) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_TIMEOUT);
-        g_critical("failed to create event %s", EVENT_NAME_TIMEOUT);
         goto out;
     }
 
@@ -324,21 +319,18 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     hr = pCreateVssBackupComponents(&vss_ctx.pVssbc);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to create VSS backup components");
-        g_critical("failed to create VSS backup components");
         goto out;
     }
 
     hr = vss_ctx.pVssbc->InitializeForBackup();
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to initialize for backup");
-        g_critical("failed to initialize for backup");
         goto out;
     }
 
     hr = vss_ctx.pVssbc->SetBackupState(true, true, vss_bt, false);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup state");
-        g_critical("failed to set backup state");
         goto out;
     }
 
@@ -357,7 +349,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup context");
-        g_critical("failed to set backup context");
         goto out;
     }
 
@@ -367,7 +358,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to gather writer metadata");
-        g_critical("failed to gather writer metadata");
         goto out;
     }
 
@@ -605,7 +595,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     enable_log();
     if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
-        g_critical_error(err_msg,hr);
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
