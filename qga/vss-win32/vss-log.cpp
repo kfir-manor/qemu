@@ -125,7 +125,7 @@ void init_vss_log(void)
 //    g_free(suffix);
 //}
 
-void g_critical_error_pretty_format(int win32_err,const char *fmt,...){
+void g_critical_error_pretty(int win32_err,const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
     char *msg =g_strdup_vprintf(fmt, ap);
