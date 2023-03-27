@@ -129,8 +129,13 @@ void init_vss_log(void)
     g_error("im error");
 }
 
-void error_get_pretty(int win32_err){
+void error_get_pretty(int win32_err,char *fmt,...){
+    va_list ap;
+    char* msg;
+    va_start(ap, fmt);
     char *suffix=g_win32_error_message(win32_err);
+    msg = g_strdup_vprintf(fmt, ap);
+    g_critical("%s: %s",msg,suffix);
     g_free(suffix);
 }
 
