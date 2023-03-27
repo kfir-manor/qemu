@@ -121,13 +121,6 @@ void init_vss_log(void)
             }
             *(log_state->log_file) = *tmp_log_file;
     }
-    g_warning("im warning");
-    g_info("im info");
-    g_message("im message");
-    g_debug("im debug");
-    g_critical("im critical");
-    g_critical_error_pretty("im critical error",0);
-    g_error("im error");
 }
 
 void g_critical_error_pretty(const char *msg,int win32_err) {
