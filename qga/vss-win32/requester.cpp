@@ -336,6 +336,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     hr = vss_ctx.pVssbc->SetBackupState(true, true, vss_bt, false);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup state");
+        g_critical("failed to set backup state");
         goto out;
     }
 
