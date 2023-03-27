@@ -540,7 +540,7 @@ out1:
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
-    char *err_msg;
+    char err_msg[64];
 
     g_debug("requester_thaw start");
 
