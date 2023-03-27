@@ -120,9 +120,13 @@ void init_vss_log(void)
     }
 }
 
-void g_critical_error_pretty(const char *msg,int win32_err) {
+void g_critical_error_pretty(int win32_err,const char *fmt,...) {
+    va_list ap;
+    va_start(ap, fmt);
     char *suffix = g_win32_error_message(win32_err);
+    char *msg =g_strdup_vprintf(fmt, ap);
     g_critical("%s: %s", msg,suffix);
+    va_end(ap);
     g_free(suffix);
 }   
 
