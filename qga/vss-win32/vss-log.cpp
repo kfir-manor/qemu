@@ -123,8 +123,12 @@ void init_vss_log(void)
     }
 }
 
-void g_critical_error(char *msg,int win32_err){
+void g_critical_error(int win32_err,const char *fmt, ...){
+    va_list ap;
+    char* msg;
+    va_start(ap, fmt);
     char *suffix=g_win32_error_message(win32_err);
+    msg = g_strdup_vprintf(fmt, ap);
     g_critical("%s: %s",msg,suffix);
     g_free(suffix);
 }
