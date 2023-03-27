@@ -119,11 +119,11 @@ void init_vss_log(void)
             *(log_state->log_file) = *tmp_log_file;
     }
 }
-void g_critical_error_pretty_format(int win32_err,const char *msg){
-    char *suffix = g_win32_error_message(win32_err);
-    g_critical("%s: %s", msg,suffix);
-    g_free(suffix);
-}
+//void g_critical_error_pretty_format(int win32_err,const char *msg){
+//    char *suffix = g_win32_error_message(win32_err);
+//    g_critical("%s: %s", msg,suffix);
+//    g_free(suffix);
+//}
 
 void g_critical_error_pretty_format(int win32_err,const char *fmt,...){
     va_list ap;
