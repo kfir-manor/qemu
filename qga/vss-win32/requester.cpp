@@ -595,7 +595,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     enable_log();
     if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
-        void g_critical_error_pretty(hr,err_msg);
+        g_critical_error_pretty(hr,err_msg);
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
