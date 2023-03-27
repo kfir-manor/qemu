@@ -126,18 +126,11 @@ void init_vss_log(void)
     g_message("im message")
     g_debug("im debug");
     g_critical("im critical");
-    char err_msg[64];
-    g_critical_error(0,"im critical error");
     g_error("im error");
 }
 
-void g_critical_error(int win32_err,const gchar *fmt, ...){
-    va_list ap;
-    char* msg;
-    va_start(ap, fmt);
+void error_get_pretty(int win32_err){
     char *suffix=g_win32_error_message(win32_err);
-    msg = g_strdup_vprintf(fmt, ap);
-    g_critical("%s: %s",msg,suffix);
     g_free(suffix);
 }
 
