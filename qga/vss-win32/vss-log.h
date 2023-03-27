@@ -5,4 +5,4 @@ void init_vss_log(void);
 void cleanup_vss_log(void);
 void disable_log(void);
 void enable_log(void);
-void g_critical_error_pretty(const char *msg,int win32_err);
+void g_critical_error_pretty(int win32_err,const char *fmt,...);
