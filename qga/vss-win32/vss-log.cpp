@@ -35,14 +35,18 @@ void disable_log(void){
 
 void enable_log(void){
     log_state->logging_enabled=true;
-    while(log_state->log_message_stack->prev_node)
+    LogStackNode *log_stack_node=log_state->log_message_stack;
+    while(log_stack_node){
+        g_log(G_LOG_DOMAIN, log_stack_node->log_level ,log_stack_node->msg);
+        log_stack_node=log_stack_node->prev_node;
+    }
 }
 void add_log_stack_node(LogState *log_state,GLogLevelFlags log_level,const gchar *message){
     LogStackNode *log_stack_node=g_new0(LogStackNode,1);
     log_stack_node->prev_node=log_state->log_message_stack;
     log_stack_node->msg=message;
     log_stack_node->log_level=log_level;
-    log_state->log_message_stack
+    log_state->log_message_stack=log_stack_node;
 }
 
 DWORD get_log_level(void)
