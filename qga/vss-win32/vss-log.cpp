@@ -38,7 +38,7 @@ void enable_log(void){
     LogStackNode *log_stack_node=log_state->log_message_stack;
     LogStackNode *old_log_stack_node;
     while(log_stack_node){
-        g_log(G_LOG_DOMAIN, log_stack_node->log_level ,log_stack_node->msg);
+        g_log(G_LOG_DOMAIN, log_stack_node->log_level ,"%s",log_stack_node->msg);
         old_log_stack_node=log_stack_node;
         log_stack_node=log_stack_node->prev_node;
         g_free(log_stack_node);
