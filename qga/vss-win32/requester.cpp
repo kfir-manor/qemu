@@ -527,10 +527,15 @@ out1:
 }
 
 
+inline void abort_vss_then_log(HRESULT hr,const char *msg){
+    vss_ctx.pVssbc->AbortBackup();
+    enable_log();
+    g_critical_error_pretty(hr,msg);
+} 
+
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
-    char err_msg[64];
 
     g_debug("requester_thaw start");
 
@@ -558,7 +563,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         }
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to complete backup");
-            strcpy(err_msg,"failed to complete backup");
+            abort_vss_then_log(hr, "failed to complete backup");
         }
         break;
 
@@ -576,7 +581,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case VSS_E_UNEXPECTED_PROVIDER_ERROR:
         if (WaitForSingleObject(vss_ctx.hEventTimeout, 0) != WAIT_OBJECT_0) {
             err_set(errset, hr, "unexpected error in VSS provider");
-            strcpy(err_msg,"unexpected error in VSS provider");
+            abort_vss_then_log(hr, "unexpected error in VSS provider");
             break;
         }
         /* fall through if hEventTimeout is signaled */
@@ -584,19 +589,17 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case (HRESULT)VSS_E_HOLD_WRITES_TIMEOUT:
         err_set(errset, hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
-        strcpy(err_msg,"couldn't hold writes: "
+        abort_vss_then_log(hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
         break;
 
     default:
         err_set(errset, hr, "failed to do snapshot set");
-        strcpy(err_msg,"failed to do snapshot set");
+        abort_vss_then_log(hr, "failed to do snapshot set");
     }
+    vss_ctx.pVssbc->AbortBackup();
     enable_log();
-    if (err_is_set(errset)) {
-        vss_ctx.pVssbc->AbortBackup();
-        g_critical_error_pretty(hr,err_msg);
-    }
+    g_critical_error_pretty(hr,err_msg);
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
 
