@@ -17,6 +17,7 @@ typedef struct LogConfig {
 typedef struct LogState {
     FILE *log_file;
     bool logging_enabled;
+    std:stack<char *> log_message_stack; 
 } LogState;
 
 static LogConfig *log_config;
@@ -85,6 +86,7 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 {
     LogState *s = (LogState *)user_data;
     if (!s->logging_enabled) {
+
         return;
     }
     const char *level_str = log_level_str(log_level);
