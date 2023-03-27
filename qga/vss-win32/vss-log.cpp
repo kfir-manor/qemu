@@ -41,6 +41,7 @@ void enable_log(void){
         g_log(G_LOG_DOMAIN, log_stack_node->log_level ,log_stack_node->msg);
         old_log_stack_node=log_stack_node;
         log_stack_node=log_stack_node->prev_node;
+        g_free(log_stack_node);
     }
 }
 void add_log_stack_node(LogState *log_state,GLogLevelFlags log_level,const gchar *message){
