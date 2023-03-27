@@ -126,11 +126,12 @@ void init_vss_log(void)
     g_message("im message")
     g_debug("im debug");
     g_critical("im critical");
+    char err_msg[64];
     g_critical_error("im critical error",0);
     g_error("im error");
 }
 
-void g_critical_error(int win32_err,const char *fmt, ...){
+void g_critical_error(int win32_err,const gchar *fmt, ...){
     va_list ap;
     char* msg;
     va_start(ap, fmt);
