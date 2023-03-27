@@ -255,7 +255,7 @@ void error_reportf_err(Error *err, const char *fmt, ...)
 }
 
 
-void warn_reportf_err(Error *err, const char *fmt, ## ...)
+void warn_reportf_err(Error *err, const char *fmt, ...)
 {
     va_list ap;
 
