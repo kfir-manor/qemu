@@ -173,7 +173,7 @@ static void AddComponents(ErrorSet *errset)
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to get writer metadata count");
-        g_cricital("failed to get writer metadata count");
+        g_critical_error("failed to get writer metadata count",hr);
         goto out;
     }
 
@@ -182,6 +182,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get writer metadata of %d/%d",
                              i, cWriters);
+            g_critical_error("failed to get writer metadata count",hr);
             goto out;
         }
 
@@ -604,7 +605,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     enable_log();
     if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
-        g_critical(err_msg);
+        g_critical_error(err_msg,hr);
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
