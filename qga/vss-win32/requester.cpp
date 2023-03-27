@@ -278,11 +278,12 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     int num_mount_points = 0;
     VSS_BACKUP_TYPE vss_bt = get_vss_backup_type();
 
-    printf("im outside log");
-    g_info("start requester_freeze");
-    g_warning("start requester_freeze this is a warning");
+    g_debug("requester_freeze start");
+
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
+        g_info("vss already frozen");
+        g_debug("requester_freeze end");
         return;
     }
 
@@ -522,13 +523,16 @@ out1:
     enable_log();
     requester_cleanup();
     CoUninitialize();
-
+    g_debug("requester_freeze end")
 }
 
 
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
+    char *err_msg;
+
+    g_debug("requester_thaw start");
 
     if (!vss_ctx.hEventThaw) {
         /*
@@ -538,8 +542,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         *num_vols = 0;
         return;
     }
-
-    g_info("start requester_thaw");
 
     /* Tell the provider that the snapshot is finished. */
     SetEvent(vss_ctx.hEventThaw);
@@ -556,6 +558,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         }
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to complete backup");
+            err_msg="failed to complete backup";
         }
         break;
 
@@ -573,6 +576,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case VSS_E_UNEXPECTED_PROVIDER_ERROR:
         if (WaitForSingleObject(vss_ctx.hEventTimeout, 0) != WAIT_OBJECT_0) {
             err_set(errset, hr, "unexpected error in VSS provider");
+            err_msg="unexpected error in VSS provider";
             break;
         }
         /* fall through if hEventTimeout is signaled */
@@ -580,19 +584,23 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case (HRESULT)VSS_E_HOLD_WRITES_TIMEOUT:
         err_set(errset, hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
+        err_msg="couldn't hold writes: "
+                "fsfreeze is limited up to 10 seconds";
         break;
 
     default:
         err_set(errset, hr, "failed to do snapshot set");
+        err_msg="failed to do snapshot set";
     }
-
+    enable_log();
     if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
+        g_critical(err_msg);
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
 
     CoUninitialize();
     StopService();
-
+    g_debug("requester_thaw end");
 }
