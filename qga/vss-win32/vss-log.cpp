@@ -119,8 +119,9 @@ void init_vss_log(void)
             *(log_state->log_file) = *tmp_log_file;
     }
 }
-
-void g_critical_error_pretty(int win32_err,const char *fmt,...){
+void g_critical_error_pretty_format(int win32_err,const char *msg){
+}
+void g_critical_error_pretty_format(int win32_err,const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
     char *suffix = g_win32_error_message(win32_err);
