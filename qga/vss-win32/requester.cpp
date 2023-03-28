@@ -170,6 +170,8 @@ static void AddComponents(ErrorSet *errset)
     PVSSCOMPONENTINFO info;
     HRESULT hr;
 
+    g_debug("AddComponents start");
+
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to get writer metadata count");
@@ -257,6 +259,7 @@ out:
     if (pComponent && info) {
         pComponent->FreeComponentInfo(info);
     }
+    g_debug("AddComponents end");
 }
 
 bool is_valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
