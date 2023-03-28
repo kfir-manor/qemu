@@ -538,6 +538,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
          * and no volumes must be frozen. We return without an error.
          */
         *num_vols = 0;
+        g_debug("requester_thaw end");
         return;
     }
 
