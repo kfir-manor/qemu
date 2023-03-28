@@ -459,8 +459,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         goto out;
     }
 
-    disable_log();
-
     /*
      * Start VSS quiescing operations.
      * CQGAVssProvider::CommitSnapshots will kick vss_ctx.hEventFrozen
@@ -497,7 +495,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
-        enable_log();
         goto out1;
     }
 
@@ -506,6 +503,8 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
                 "couldn't receive Frozen event from VSS provider");
         goto out;
     }
+    
+    disable_log();
 
     if (mountpoints) {
         *num_vols = vss_ctx.cFrozenVols = num_mount_points;
@@ -520,7 +519,6 @@ out:
     }
 
 out1:
-    enable_log();
     requester_cleanup();
     CoUninitialize();
     g_debug("requester_freeze end");
@@ -530,7 +528,6 @@ out1:
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
-    const char err_msg;
 
     g_debug("requester_thaw start");
 
