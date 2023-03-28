@@ -23,7 +23,6 @@ typedef struct LogConfig {
 typedef struct LogState {
     FILE *log_file;
     bool logging_enabled;
-    LogStackNode log_message_stack; 
 } LogState;
 
 static LogConfig *log_config;
@@ -35,21 +34,6 @@ void disable_log(void){
 
 void enable_log(void){
     log_state->logging_enabled=true;
-    LogStackNode *log_stack_node=log_state->log_message_stack;
-    LogStackNode *old_log_stack_node;
-    while(log_stack_node){
-        g_log(G_LOG_DOMAIN, log_stack_node->log_level ,"%s",log_stack_node->msg);
-        old_log_stack_node=log_stack_node;
-        log_stack_node=log_stack_node->prev_node;
-        g_free(log_stack_node);
-    }
-}
-void add_log_stack_node(LogState *log_state,GLogLevelFlags log_level,const gchar *message){
-    LogStackNode *log_stack_node=g_new0(LogStackNode,1);
-    log_stack_node->prev_node=log_state->log_message_stack;
-    log_stack_node->msg=message;
-    log_stack_node->log_level=log_level;
-    log_state->log_message_stack=log_stack_node;
 }
 
 DWORD get_log_level(void)
@@ -107,7 +91,6 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 {
     LogState *s = (LogState *)user_data;
     if (!s->logging_enabled) {
-        add_log_stack_node(s,log_level,message);
         return;
     }
     const char *level_str = log_level_str(log_level);
