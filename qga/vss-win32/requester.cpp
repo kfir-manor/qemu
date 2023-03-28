@@ -503,7 +503,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
                 "couldn't receive Frozen event from VSS provider");
         goto out;
     }
-    
+
     disable_log();
 
     if (mountpoints) {
@@ -511,6 +511,9 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
+
+    g_debug("requester_freeze end");
+    
     return;
 
 out:
