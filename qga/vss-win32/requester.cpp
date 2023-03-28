@@ -173,6 +173,7 @@ static void AddComponents(ErrorSet *errset)
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to get writer metadata count");
+        g_win32_error_log_critical(hr, "failed to get writer metadata count");
         goto out;
     }
 
