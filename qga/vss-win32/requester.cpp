@@ -258,7 +258,7 @@ VSS_BACKUP_TYPE get_vss_backup_type(
                                                 "VssOption",
                                                 defaultVssBT));
     if (!is_valid_vss_backup_type(vssBackupType)) {
-        g_message("VssOption value is not a valid vss backup type")
+        g_message("VssOption value is not a valid vss backup type");
         return defaultVssBT;
     }
     return vssBackupType;
