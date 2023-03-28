@@ -288,7 +288,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
 
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
-        g_info("fs already frozen");
+        g_message("fs already frozen");
         return;
     }
 
