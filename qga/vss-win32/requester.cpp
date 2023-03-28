@@ -511,9 +511,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-
     g_debug("requester_freeze end");
-    
     return;
 
 out:
@@ -559,7 +557,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         }
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to complete backup");
-            vss_ctx.pVssbc->AbortBackup();
             g_win32_error_log_critical(hr, "failed to complete backup");
         }
         break;
@@ -578,7 +575,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case VSS_E_UNEXPECTED_PROVIDER_ERROR:
         if (WaitForSingleObject(vss_ctx.hEventTimeout, 0) != WAIT_OBJECT_0) {
             err_set(errset, hr, "unexpected error in VSS provider");
-            vss_ctx.pVssbc->AbortBackup();
             g_win32_error_log_critical(hr, "unexpected error in VSS provider");
             break;
         }
@@ -587,15 +583,16 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case (HRESULT)VSS_E_HOLD_WRITES_TIMEOUT:
         err_set(errset, hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
-        vss_ctx.pVssbc->AbortBackup();
         g_win32_error_log_critical(hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
         break;
 
     default:
         err_set(errset, hr, "failed to do snapshot set");
-        vss_ctx.pVssbc->AbortBackup();
         g_win32_error_log_critical(hr, "failed to do snapshot set");
+    }
+    if (err_is_set(errset)) {
+        vss_ctx.pVssbc->AbortBackup();
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
