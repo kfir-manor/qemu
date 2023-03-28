@@ -550,6 +550,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     assert(vss_ctx.pAsyncSnapshot);
 
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
+    enable_log();
     switch (hr) {
     case VSS_S_ASYNC_FINISHED:
         hr = vss_ctx.pVssbc->BackupComplete(pAsync.replace());
@@ -558,6 +559,8 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
         }
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to complete backup");
+            vss_ctx.pVssbc->AbortBackup();
+            g_win32_error_log_critical(hr, "failed to complete backup");
         }
         break;
 
@@ -575,6 +578,8 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case VSS_E_UNEXPECTED_PROVIDER_ERROR:
         if (WaitForSingleObject(vss_ctx.hEventTimeout, 0) != WAIT_OBJECT_0) {
             err_set(errset, hr, "unexpected error in VSS provider");
+            vss_ctx.pVssbc->AbortBackup();
+            g_win32_error_log_critical(hr, "unexpected error in VSS provider");
             break;
         }
         /* fall through if hEventTimeout is signaled */
@@ -582,15 +587,15 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     case (HRESULT)VSS_E_HOLD_WRITES_TIMEOUT:
         err_set(errset, hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
+        vss_ctx.pVssbc->AbortBackup();
+        g_win32_error_log_critical(hr, "couldn't hold writes: "
+                "fsfreeze is limited up to 10 seconds");
         break;
 
     default:
         err_set(errset, hr, "failed to do snapshot set");
-    }
-    enable_log();
-    if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
-        g_critical_error_pretty_fix(hr,);
+        g_win32_error_log_critical(hr, "failed to do snapshot set");
     }
     *num_vols = vss_ctx.cFrozenVols;
     requester_cleanup();
