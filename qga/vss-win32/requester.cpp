@@ -336,6 +336,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     hr = vss_ctx.pVssbc->SetBackupState(true, true, vss_bt, false);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup state");
+        g_win32_error_log_critical(hr, "failed to set backup state");
         goto out;
     }
 
