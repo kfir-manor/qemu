@@ -263,7 +263,14 @@ VSS_BACKUP_TYPE get_vss_backup_type(
     return vssBackupType;
 }
 
-void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
+
+void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset){
+    g_debug("requester_freeze start");
+    requester_freeze_internal(num_vols,mountpoints,errset);
+    g_debug("requester_freeze end");
+}
+
+void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
     HANDLE volume;
@@ -278,12 +285,10 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     int num_mount_points = 0;
     VSS_BACKUP_TYPE vss_bt = get_vss_backup_type();
 
-    g_debug("requester_freeze start");
 
     if (vss_ctx.pVssbc) { /* already frozen */
         *num_vols = 0;
-        g_info("vss already frozen");
-        g_debug("requester_freeze end");
+        g_info("fs already frozen");
         return;
     }
 
@@ -475,11 +480,13 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         HRESULT hr2 = vss_ctx.pAsyncSnapshot->QueryStatus(&hr, NULL);
         if (FAILED(hr2)) {
             err_set(errset, hr, "failed to do snapshot set");
+            g_win32_error_log_critical(hr, "failed to do snapshot set");
             goto out;
         }
         if (hr != VSS_S_ASYNC_PENDING) {
             err_set(errset, E_FAIL,
                     "DoSnapshotSet exited without Frozen event");
+            g_win32_error_log_critical(E_FAIL, "DoSnapshotSet exited without Frozen event");
             goto out;
         }
         wait_status = WaitForSingleObject(vss_ctx.hEventFrozen,
@@ -495,11 +502,15 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
+        g_win32_error_log_critical(E_FAIL, 
+                "timeout when try to receive Frozen event from VSS provider");
         goto out1;
     }
 
     if (wait_status != WAIT_OBJECT_0) {
         err_set(errset, E_FAIL,
+                "couldn't receive Frozen event from VSS provider");
+        g_win32_error_log_critical(E_FAIL, 
                 "couldn't receive Frozen event from VSS provider");
         goto out;
     }
@@ -511,7 +522,6 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-    g_debug("requester_freeze end");
     return;
 
 out:
@@ -522,7 +532,6 @@ out:
 out1:
     requester_cleanup();
     CoUninitialize();
-    g_debug("requester_freeze end");
 }
 
 
