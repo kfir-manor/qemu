@@ -305,6 +305,8 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     if (!vss_ctx.hEventFrozen) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_FROZEN);
+        g_win32_error_log_critical(GetLastError(), "failed to create event %s",
+                                   EVENT_NAME_FROZEN);
         goto out;
     }
     vss_ctx.hEventThaw = CreateEvent(&sa, TRUE, FALSE, EVENT_NAME_THAW);
