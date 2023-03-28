@@ -330,6 +330,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     hr = vss_ctx.pVssbc->InitializeForBackup();
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to initialize for backup");
+        g_win32_error_log_critical(hr, "failed to initialize for backup");
         goto out;
     }
 
