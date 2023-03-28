@@ -354,6 +354,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup context");
+        g_win32_error_log_critical(hr, "failed to set backup context");
         goto out;
     }
 
@@ -363,6 +364,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to gather writer metadata");
+        g_win32_error_log_critical(hr, "failed to gather writer metadata");
         goto out;
     }
 
@@ -374,6 +376,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     hr = vss_ctx.pVssbc->StartSnapshotSet(&guidSnapshotSet);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to start snapshot set");
+        g_win32_error_log_critical(hr, "failed to start snapshot set");
         goto out;
     }
 
