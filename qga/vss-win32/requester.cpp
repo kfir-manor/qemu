@@ -189,6 +189,8 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get identity of writer %d/%d",
                              i, cWriters);
+            g_win32_error_log_critical(hr, "failed to get identity of writer %d/%d",
+                             i, cWriters);
             goto out;
         }
 
