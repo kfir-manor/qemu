@@ -213,6 +213,9 @@ static void AddComponents(ErrorSet *errset)
                 err_set(errset, hr,
                                  "failed to get component info %d/%d of %S",
                                  j, cComponents, bstrWriterName);
+                g_win32_error_log_critical(hr,
+                                 "failed to get component info %d/%d of %S",
+                                 j, cComponents, bstrWriterName);
                 goto out;
             }
 
