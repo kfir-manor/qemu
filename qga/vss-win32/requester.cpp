@@ -393,6 +393,9 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
             if (FAILED(hr)) {
                 err_set(errset, hr, "failed to add %S to snapshot set",
                         volume_name_wchar);
+                g_win32_error_log_critical(hr, 
+                        "failed to add %S to snapshot set",
+                        volume_name_wchar);        
                 delete[] volume_name_wchar;
                 goto out;
             }
@@ -403,6 +406,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
 
         if (num_mount_points == 0) {
             /* If there is no valid mount points, just exit. */
+            g_message("no valid mount points");
             goto out;
         }
     }
@@ -411,6 +415,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
         volume = FindFirstVolumeW(short_volume_name, sizeof(short_volume_name));
         if (volume == INVALID_HANDLE_VALUE) {
             err_set(errset, hr, "failed to find first volume");
+            g_win32_error_log_critical(hr, "failed to find first volume");
             goto out;
         }
 
@@ -429,6 +434,9 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
                     }
                     err_set(errset, hr, "failed to add %S to snapshot set",
                             display_name);
+                    g_win32_error_log_critical(hr,
+                            "failed to add %S to snapshot set",
+                            display_name);
                     FindVolumeClose(volume);
                     goto out;
                 }
@@ -442,6 +450,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
         }
 
         if (num_fixed_drives == 0) {
+            g_message("no fixed drive");
             goto out; /* If there is no fixed drive, just exit. */
         }
     }
