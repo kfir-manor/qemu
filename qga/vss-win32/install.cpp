@@ -24,6 +24,7 @@
 #include <comutil.h>
 #include <sddl.h>
 #include <winsvc.h>
+#include <vss-log.h>
 
 #define BUFFER_SIZE 1024
 
