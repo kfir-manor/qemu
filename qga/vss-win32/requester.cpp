@@ -619,7 +619,8 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 
     assert(vss_ctx.pVssbc);
     assert(vss_ctx.pAsyncSnapshot);
-
+    
+    enable_log();
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
     switch (hr) {
     case VSS_S_ASYNC_FINISHED:
