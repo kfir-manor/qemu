@@ -9,12 +9,6 @@ extern "C" {
 #define FULL_LOG_LEVEL_MASK G_LOG_LEVEL_MASK
 #define LOG_FILE_NAME "qga_vss_log.log"
 
-typedef struct LogStackNode{
-    LogStackNode *prev_node;
-    const char *msg;
-    GLogLevelFlags log_level;
-}
-
 typedef struct LogConfig {
     char log_filepath[MAX_PATH + strlen(LOG_FILE_NAME)];
     GLogLevelFlags log_level_mask;
