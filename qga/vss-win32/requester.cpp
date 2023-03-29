@@ -573,7 +573,6 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
         goto out;
     }
 
-    disable_log();
 
     if (mountpoints) {
         *num_vols = vss_ctx.cFrozenVols = num_mount_points;
@@ -621,7 +620,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     assert(vss_ctx.pAsyncSnapshot);
 
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
-    enable_log();
     switch (hr) {
     case VSS_S_ASYNC_FINISHED:
         hr = vss_ctx.pVssbc->BackupComplete(pAsync.replace());
