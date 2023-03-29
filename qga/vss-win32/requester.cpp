@@ -54,17 +54,7 @@ static struct QGAVSSContext {
     int cFrozenVols;               /* number of frozen volumes */
 } vss_ctx;
 
-STDAPI requester_init(void)
-{
-    init_vss_log();
-    g_debug("requester_init start");
-    HRESULT hr = requester_init_internal();
-    g_debug("requester_init end");
-    if(hr != S_OK){
-        cleanup_vss_log();
-    }
-    return hr;
-}
+
 
 STDAPI requester_init_internal(void)
 {
@@ -75,6 +65,7 @@ STDAPI requester_init_internal(void)
 
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
+        g_critical
         return hr;
     }
 
@@ -106,6 +97,18 @@ STDAPI requester_init_internal(void)
 
     return S_OK;
     out:
+}
+
+STDAPI requester_init(void)
+{
+    init_vss_log();
+    g_debug("requester_init start");
+    HRESULT hr = requester_init_internal();
+    g_debug("requester_init end");
+    if(hr != S_OK){
+        cleanup_vss_log();
+    }
+    return hr;
 }
 
 static void requester_cleanup(void)
