@@ -1,4 +1,5 @@
 #include "registry.h"
+#include "vss-log.h"
 DWORD get_reg_dword_value(HKEY baseKey, LPCSTR subKey, LPCSTR valueName,
                           DWORD defaultData)
 {
