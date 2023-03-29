@@ -56,12 +56,22 @@ static struct QGAVSSContext {
 
 STDAPI requester_init(void)
 {
+    init_vss_log();
+    g_debug("requester_init start");
+    STDAPI hr = requester_init_internal();
+    g_debug("requester_init end");
+    if(hr != S_OK){
+        cleanup_vss_log();
+    }
+    return hr;
+}
+
+STDAPI requester_init_internal(void)
+{
     COMInitializer initializer; /* to call CoInitializeSecurity */
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
-        RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);
-
-    //init_vss_log();
+        RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);    
 
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
@@ -93,13 +103,13 @@ STDAPI requester_init(void)
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
-    init_vss_log();
 
     return S_OK;
 }
 
 static void requester_cleanup(void)
 {
+    g_debug("requester_cleanup start");    
     if (vss_ctx.hEventFrozen) {
         CloseHandle(vss_ctx.hEventFrozen);
         vss_ctx.hEventFrozen = NULL;
@@ -121,10 +131,12 @@ static void requester_cleanup(void)
         vss_ctx.pVssbc = NULL;
     }
     vss_ctx.cFrozenVols = 0;
+    g_debug("requester_cleanup end");    
 }
 
 STDAPI requester_deinit(void)
 {
+    g_debug("requester_deinit start");
     requester_cleanup();
 
     pCreateVssBackupComponents = NULL;
@@ -134,6 +146,7 @@ STDAPI requester_deinit(void)
         hLib = NULL;
     }
     cleanup_vss_log();
+    g_debug("requester_deinit end");
     return S_OK;
 }
 
