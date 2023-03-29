@@ -579,6 +579,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
+    disable_log();
     return;
 
 out:
