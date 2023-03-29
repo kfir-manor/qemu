@@ -587,7 +587,7 @@ out:
         vss_ctx.pVssbc->AbortBackup();
     }
 
-out1:
+    out1:
     requester_cleanup();
     CoUninitialize();
 }
