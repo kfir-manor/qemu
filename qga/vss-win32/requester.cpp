@@ -298,12 +298,6 @@ VSS_BACKUP_TYPE get_vss_backup_type(
 }
 
 
-void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset){
-    g_debug("requester_freeze start");
-    requester_freeze_internal(num_vols,mountpoints,errset);
-    g_debug("requester_freeze end");
-}
-
 void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
@@ -592,6 +586,11 @@ out:
     CoUninitialize();
 }
 
+void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset){
+    g_debug("requester_freeze start");
+    requester_freeze_internal(num_vols,mountpoints,errset);
+    g_debug("requester_freeze end");
+}
 
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
