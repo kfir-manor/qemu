@@ -96,7 +96,6 @@ STDAPI requester_init_internal(void)
     }
 
     return S_OK;
-    out:
 }
 
 STDAPI requester_init(void)
