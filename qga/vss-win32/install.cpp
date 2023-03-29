@@ -241,13 +241,11 @@ out:
 STDAPI COMUnregister(void)
 {
     HRESULT hr;
-    init_vss_log();
     g_debug("COMUnregister start");
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
     g_debug("COMUnregister end");
-    cleanup_vss_log();
     return hr;
 }
 
@@ -270,7 +268,6 @@ STDAPI COMRegister(void)
     wchar_t buffer[BUFFER_SIZE];
     const wchar_t *administratorsGroupSID = L"S-1-5-32-544";
     const wchar_t *systemUserSID = L"S-1-5-18";
-    init_vss_log();
     g_debug("COMRegister start");
 
     if (!g_hinstDll) {
@@ -374,18 +371,21 @@ out:
         COMUnregister();
     }
     g_debug("COMRegister end");
-    cleanup_vss_log();
     return hr;
 }
 
 STDAPI_(void) CALLBACK DLLCOMRegister(HWND, HINSTANCE, LPSTR, int)
 {
+    init_vss_log();
     COMRegister();
+    cleanup_vss_log();
 }
 
 STDAPI_(void) CALLBACK DLLCOMUnregister(HWND, HINSTANCE, LPSTR, int)
 {
+    init_vss_log();
     COMUnregister();
+    cleanup_vss_log();
 }
 
 static BOOL CreateRegistryKey(LPCTSTR key, LPCTSTR value, LPCTSTR data)
