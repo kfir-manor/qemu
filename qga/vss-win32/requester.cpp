@@ -94,6 +94,7 @@ STDAPI requester_init_internal(void)
         GetProcAddress(hLib, "VssFreeSnapshotProperties");
     if (!pVssFreeSnapshotProperties) {
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
+        g_critical("failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
 
