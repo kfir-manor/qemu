@@ -66,13 +66,15 @@ STDAPI requester_init(void)
     return hr;
 }
 
-STDAPI requester_init_internal(void)
+STDAPI requester_init(void)
 {
     COMInitializer initializer; /* to call CoInitializeSecurity */
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
         RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);    
-
+    init_vss_log();
+    g_debug("requester_init start");
+    
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
         return hr;
@@ -105,6 +107,7 @@ STDAPI requester_init_internal(void)
     }
 
     return S_OK;
+    out:
 }
 
 static void requester_cleanup(void)
