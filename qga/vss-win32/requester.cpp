@@ -58,7 +58,7 @@ STDAPI requester_init(void)
 {
     init_vss_log();
     g_debug("requester_init start");
-    STDAPI hr = requester_init_internal();
+    const STDAPI hr = requester_init_internal();
     g_debug("requester_init end");
     if(hr != S_OK){
         cleanup_vss_log();
