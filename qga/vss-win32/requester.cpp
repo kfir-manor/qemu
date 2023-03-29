@@ -58,7 +58,7 @@ STDAPI requester_init(void)
 {
     init_vss_log();
     g_debug("requester_init start");
-    const STDAPI hr = requester_init_internal();
+    HRESULT hr = requester_init_internal();
     g_debug("requester_init end");
     if(hr != S_OK){
         cleanup_vss_log();
@@ -66,15 +66,13 @@ STDAPI requester_init(void)
     return hr;
 }
 
-STDAPI requester_init(void)
+STDAPI requester_init_internal(void)
 {
     COMInitializer initializer; /* to call CoInitializeSecurity */
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
         RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);    
-    init_vss_log();
-    g_debug("requester_init start");
-    
+
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
         return hr;
