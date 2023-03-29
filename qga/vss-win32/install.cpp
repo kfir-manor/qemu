@@ -311,7 +311,7 @@ STDAPI COMRegister(void)
     fprintf(stderr, "  %s\n", dllPath);
     g_info("  %s\n", dllPath);
     fprintf(stderr, "  %s\n", tlbPath);
-    g_info(stderr, "  %s\n", tlbPath);
+    g_info("  %s\n", tlbPath);
     if (!PathFileExists(tlbPath)) {
         hr = HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
         errmsg(hr, "Failed to lookup tlb");

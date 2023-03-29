@@ -12,5 +12,5 @@ void enable_log(void);
 #define g_win32_error_log_warning(win32_err,fmt,...) \
     g_win32_error_log((win32_err),G_LOG_LEVEL_WARNING,(fmt), ## __VA_ARGS__)
 
-void g_win32_error_log(int win32_err,GLogLevelFlags log_level,const char *fmt,...) G_GNUC_PRINTF(2, 3);
+void g_win32_error_log(int win32_err,GLogLevelFlags log_level,const char *fmt,...) G_GNUC_PRINTF(3, 4);
 
