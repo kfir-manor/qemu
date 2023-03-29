@@ -65,13 +65,14 @@ STDAPI requester_init_internal(void)
 
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
-        g_critical
+        g_critical("failed to CoInitializeSecurity (error %lx)\n", hr);
         return hr;
     }
 
     hLib = LoadLibraryA("VSSAPI.DLL");
     if (!hLib) {
         fprintf(stderr, "failed to load VSSAPI.DLL\n");
+        g_critical("failed to load VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
 
@@ -85,6 +86,7 @@ STDAPI requester_init_internal(void)
         );
     if (!pCreateVssBackupComponents) {
         fprintf(stderr, "failed to get proc address from VSSAPI.DLL\n");
+        g_critical("failed to get proc address from VSSAPI.DLL\n");
         return HRESULT_FROM_WIN32(GetLastError());
     }
 
