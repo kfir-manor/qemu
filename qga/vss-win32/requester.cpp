@@ -442,9 +442,9 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
             if (FAILED(hr)) {
                 err_set(errset, hr, "failed to add %S to snapshot set",
                         volume_name_wchar);
-                g_win32_error_log_critical(hr, 
+                g_win32_error_log_critical(hr,
                         "failed to add %S to snapshot set",
-                        volume_name_wchar);        
+                        volume_name_wchar);
                 delete[] volume_name_wchar;
                 goto out;
             }
@@ -547,7 +547,8 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
         if (hr != VSS_S_ASYNC_PENDING) {
             err_set(errset, E_FAIL,
                     "DoSnapshotSet exited without Frozen event");
-            g_win32_error_log_critical(E_FAIL, "DoSnapshotSet exited without Frozen event");
+            g_win32_error_log_critical(E_FAIL, 
+                                "DoSnapshotSet exited without Frozen event");
             goto out;
         }
         wait_status = WaitForSingleObject(vss_ctx.hEventFrozen,
@@ -620,7 +621,7 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
 
     assert(vss_ctx.pVssbc);
     assert(vss_ctx.pAsyncSnapshot);
-    
+
     enable_log();
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
     switch (hr) {
@@ -678,6 +679,6 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     g_debug("requester_thaw start");
-    requester_thaw_internal(num_vols,mountpints,errset);
+    requester_thaw_internal(num_vols, mountpints, errset);
     g_debug("requester_thaw end");
 }
