@@ -131,7 +131,7 @@ void g_win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
 }
 
 
-void cleanup_vss_log(void)
+void deinit_vss_log(void)
 {
     g_free(log_config);
     g_free(log_state);

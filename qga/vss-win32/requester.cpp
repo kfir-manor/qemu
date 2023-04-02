@@ -108,7 +108,7 @@ STDAPI requester_init(void)
     HRESULT hr = requester_init_internal();
     g_debug("requester_init end");
     if(hr != S_OK){
-        cleanup_vss_log();
+        deinit_vss_log();
     }
     return hr;
 }
@@ -151,7 +151,7 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
-    cleanup_vss_log();
+    deinit_vss_log();
     g_debug("requester_deinit end");
     return S_OK;
 }

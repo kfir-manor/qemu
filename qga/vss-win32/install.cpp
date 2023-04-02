@@ -378,14 +378,14 @@ STDAPI_(void) CALLBACK DLLCOMRegister(HWND, HINSTANCE, LPSTR, int)
 {
     init_vss_log();
     COMRegister();
-    cleanup_vss_log();
+    deinit_vss_log();
 }
 
 STDAPI_(void) CALLBACK DLLCOMUnregister(HWND, HINSTANCE, LPSTR, int)
 {
     init_vss_log();
     COMUnregister();
-    cleanup_vss_log();
+    deinit_vss_log();
 }
 
 static BOOL CreateRegistryKey(LPCTSTR key, LPCTSTR value, LPCTSTR data)
