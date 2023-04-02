@@ -61,7 +61,7 @@ STDAPI requester_init_internal(void)
     COMInitializer initializer; /* to call CoInitializeSecurity */
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
-        RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);    
+        RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);
 
     if (FAILED(hr)) {
         fprintf(stderr, "failed to CoInitializeSecurity (error %lx)\n", hr);
@@ -107,7 +107,7 @@ STDAPI requester_init(void)
     g_debug("requester_init start");
     HRESULT hr = requester_init_internal();
     g_debug("requester_init end");
-    if(hr != S_OK){
+    if (hr != S_OK) {
         deinit_vss_log();
     }
     return hr;
@@ -115,7 +115,7 @@ STDAPI requester_init(void)
 
 static void requester_cleanup(void)
 {
-    g_debug("requester_cleanup start");    
+    g_debug("requester_cleanup start");
     if (vss_ctx.hEventFrozen) {
         CloseHandle(vss_ctx.hEventFrozen);
         vss_ctx.hEventFrozen = NULL;
@@ -137,7 +137,7 @@ static void requester_cleanup(void)
         vss_ctx.pVssbc = NULL;
     }
     vss_ctx.cFrozenVols = 0;
-    g_debug("requester_cleanup end");    
+    g_debug("requester_cleanup end");
 }
 
 STDAPI requester_deinit(void)
@@ -203,7 +203,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get writer metadata of %d/%d",
                              i, cWriters);
-            g_win32_error_log_critical(hr, 
+            g_win32_error_log_critical(hr,
                                     "failed to get writer metadata of %d/%d",
                                     i, cWriters);
             goto out;
@@ -214,7 +214,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get identity of writer %d/%d",
                              i, cWriters);
-            g_win32_error_log_critical(hr, 
+            g_win32_error_log_critical(hr,
                                 "failed to get identity of writer %d/%d",
                                 i, cWriters);
             goto out;
@@ -260,7 +260,7 @@ static void AddComponents(ErrorSet *errset)
                 if (FAILED(hr)) {
                     err_set(errset, hr, "failed to add component %S(%S)",
                                      info->bstrComponentName, bstrWriterName);
-                    g_win32_error_log_critical(hr, 
+                    g_win32_error_log_critical(hr,
                                     "failed to add component %S(%S)",
                                     info->bstrComponentName, bstrWriterName);
                     goto out;
@@ -563,7 +563,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
-        g_win32_error_log_critical(E_FAIL, 
+        g_win32_error_log_critical(E_FAIL,
                 "timeout when try to receive Frozen event from VSS provider");
         goto out1;
     }
@@ -571,7 +571,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     if (wait_status != WAIT_OBJECT_0) {
         err_set(errset, E_FAIL,
                 "couldn't receive Frozen event from VSS provider");
-        g_win32_error_log_critical(E_FAIL, 
+        g_win32_error_log_critical(E_FAIL,
                 "couldn't receive Frozen event from VSS provider");
         goto out;
     }
@@ -595,17 +595,13 @@ out:
     CoUninitialize();
 }
 
-void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset){
+void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
+{
     g_debug("requester_freeze start");
-    requester_freeze_internal(num_vols,mountpoints,errset);
+    requester_freeze_internal(num_vols, mountpoints, errset);
     g_debug("requester_freeze end");
 }
-void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
-{
-    g_debug("requester_thaw start");
-    requester_thaw_internal(num_vols,mountpints,errset);
-    g_debug("requester_thaw end");
-}
+
 void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
@@ -677,4 +673,11 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
 
     CoUninitialize();
     StopService();
+}
+
+void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
+{
+    g_debug("requester_thaw start");
+    requester_thaw_internal(num_vols,mountpints,errset);
+    g_debug("requester_thaw end");
 }
