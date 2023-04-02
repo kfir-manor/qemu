@@ -214,8 +214,9 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get identity of writer %d/%d",
                              i, cWriters);
-            g_win32_error_log_critical(hr, "failed to get identity of writer %d/%d",
-                             i, cWriters);
+            g_win32_error_log_critical(hr, 
+                                "failed to get identity of writer %d/%d",
+                                i, cWriters);
             goto out;
         }
 
@@ -304,7 +305,8 @@ VSS_BACKUP_TYPE get_vss_backup_type(
 }
 
 
-void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errset)
+void requester_freeze_internal(int *num_vols, void *mountpoints,
+                               ErrorSet *errset)
 {
     COMPointer<IVssAsync> pAsync;
     HANDLE volume;
@@ -364,7 +366,8 @@ void requester_freeze_internal(int *num_vols, void *mountpoints, ErrorSet *errse
     hr = pCreateVssBackupComponents(&vss_ctx.pVssbc);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to create VSS backup components");
-        g_win32_error_log_critical(hr, "failed to create VSS backup components");
+        g_win32_error_log_critical(hr,
+                                   "failed to create VSS backup components");
         goto out;
     }
 
