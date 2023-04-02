@@ -597,12 +597,15 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset){
     requester_freeze_internal(num_vols,mountpoints,errset);
     g_debug("requester_freeze end");
 }
-
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
-    COMPointer<IVssAsync> pAsync;
-
     g_debug("requester_thaw start");
+    requester_thaw_internal(num_vols,mountpints,errset);
+    g_debug("requester_thaw end");
+}
+void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
+{
+    COMPointer<IVssAsync> pAsync;
 
     if (!vss_ctx.hEventThaw) {
         /*
@@ -610,7 +613,6 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
          * and no volumes must be frozen. We return without an error.
          */
         *num_vols = 0;
-        g_debug("requester_thaw end");
         return;
     }
 
@@ -672,5 +674,4 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 
     CoUninitialize();
     StopService();
-    g_debug("requester_thaw end");
 }
