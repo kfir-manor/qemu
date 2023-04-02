@@ -24,6 +24,7 @@
 #include <comutil.h>
 #include <sddl.h>
 #include <winsvc.h>
+#include <vss-log.h>
 
 #define BUFFER_SIZE 1024
 
@@ -55,6 +56,7 @@ void errmsg(DWORD err, const char *text)
                   NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   (char *)&msg, 0, NULL);
     fprintf(stderr, "%.*s. (Error: %lx) %s\n", len, text, err, msg);
+    g_critical("%.*s. (Error: %lx) %s\n", len, text, err, msg);
     LocalFree(msg);
 }
 
@@ -107,6 +109,8 @@ static HRESULT GetAdminName(_bstr_t *name)
     ULONG returned;
     _variant_t var;
 
+    g_debug("GetAdminName start");
+
     chk(CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER,
                          IID_IWbemLocator, (LPVOID *)pLoc.replace()));
     chk(pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"), NULL, NULL, NULL,
@@ -141,6 +145,7 @@ static HRESULT GetAdminName(_bstr_t *name)
     }
 
 out:
+    g_debug("GetAdminName end");
     return hr;
 }
 
@@ -148,6 +153,7 @@ out:
 static HRESULT getNameByStringSID(
     const wchar_t *sid, LPWSTR buffer, LPDWORD bufferLen)
 {
+    g_debug("getNameByStringSID start");
     HRESULT hr = S_OK;
     PSID psid = NULL;
     SID_NAME_USE groupType;
@@ -167,6 +173,7 @@ static HRESULT getNameByStringSID(
     LocalFree(psid);
 
 out:
+    g_debug("getNameByStringSID end");
     return hr;
 }
 
@@ -182,6 +189,7 @@ static HRESULT QGAProviderFind(
     COMPointer<ICatalogObject> pObj;
     _variant_t var;
     long i, n;
+    g_debug("QGAProviderFind start");
 
     chk(CoCreateInstance(CLSID_COMAdminCatalog, NULL, CLSCTX_INPROC_SERVER,
                          IID_IUnknown, (void **)pUnknown.replace()));
@@ -204,6 +212,7 @@ static HRESULT QGAProviderFind(
     chk(pColl->SaveChanges(&n));
 
 out:
+    g_debug("QGAProviderFind end");
     return hr;
 }
 
@@ -218,10 +227,13 @@ static HRESULT QGAProviderCount(ICatalogCollection *coll, int i, void *arg)
 static HRESULT QGAProviderRemove(ICatalogCollection *coll, int i, void *arg)
 {
     HRESULT hr;
+    g_debug("QGAProviderRemove start");
 
     fprintf(stderr, "Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
+    g_info("Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
     chk(coll->Remove(i));
 out:
+    g_debug("QGAProviderRemove end");
     return hr;
 }
 
@@ -229,10 +241,11 @@ out:
 STDAPI COMUnregister(void)
 {
     HRESULT hr;
-
+    g_debug("COMUnregister start");
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
+    g_debug("COMUnregister end");
     return hr;
 }
 
@@ -255,6 +268,7 @@ STDAPI COMRegister(void)
     wchar_t buffer[BUFFER_SIZE];
     const wchar_t *administratorsGroupSID = L"S-1-5-32-544";
     const wchar_t *systemUserSID = L"S-1-5-18";
+    g_debug("COMRegister start");
 
     if (!g_hinstDll) {
         errmsg(E_FAIL, "Failed to initialize DLL");
@@ -305,8 +319,11 @@ STDAPI COMRegister(void)
     strcpy(tlbPath, dllPath);
     strcpy(tlbPath+n-3, "tlb");
     fprintf(stderr, "Registering " QGA_PROVIDER_NAME ":\n");
+    g_info("Registering " QGA_PROVIDER_NAME ":\n");
     fprintf(stderr, "  %s\n", dllPath);
+    g_info("  %s\n", dllPath);
     fprintf(stderr, "  %s\n", tlbPath);
+    g_info("  %s\n", tlbPath);
     if (!PathFileExists(tlbPath)) {
         hr = HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
         errmsg(hr, "Failed to lookup tlb");
@@ -353,18 +370,22 @@ out:
     if (unregisterOnFailure && FAILED(hr)) {
         COMUnregister();
     }
-
+    g_debug("COMRegister end");
     return hr;
 }
 
 STDAPI_(void) CALLBACK DLLCOMRegister(HWND, HINSTANCE, LPSTR, int)
 {
+    init_vss_log();
     COMRegister();
+    deinit_vss_log();
 }
 
 STDAPI_(void) CALLBACK DLLCOMUnregister(HWND, HINSTANCE, LPSTR, int)
 {
+    init_vss_log();
     COMUnregister();
+    deinit_vss_log();
 }
 
 static BOOL CreateRegistryKey(LPCTSTR key, LPCTSTR value, LPCTSTR data)
@@ -487,6 +508,7 @@ STDAPI DllUnregisterServer(void)
     TCHAR key[256];
     COMInitializer initializer;
     COMPointer<IVssAdmin> pVssAdmin;
+    g_debug("DllUnregisterServer start");
 
     HRESULT hr = CoCreateInstance(CLSID_VSSCoordinator,
                                   NULL, CLSCTX_ALL, IID_IVssAdmin,
@@ -500,7 +522,7 @@ STDAPI DllUnregisterServer(void)
     sprintf(key, "CLSID\\%s", g_szClsid);
     SHDeleteKey(HKEY_CLASSES_ROOT, key);
     SHDeleteKey(HKEY_CLASSES_ROOT, g_szProgid);
-
+    g_debug("DllUnregisterServer end");
     return S_OK; /* Uninstall should never fail */
 }
 
@@ -509,6 +531,7 @@ STDAPI DllUnregisterServer(void)
 namespace _com_util
 {
     BSTR WINAPI ConvertStringToBSTR(const char *ascii) {
+        g_debug("ConvertStringToBSTR start");
         int len = strlen(ascii);
         BSTR bstr = SysAllocStringLen(NULL, len);
 
@@ -518,8 +541,10 @@ namespace _com_util
 
         if (mbstowcs(bstr, ascii, len) == (size_t)-1) {
             fprintf(stderr, "Failed to convert string '%s' into BSTR", ascii);
+            g_warning("Failed to convert string '%s' into BSTR", ascii);
             bstr[0] = 0;
         }
+        g_debug("ConvertStringToBSTR end");
         return bstr;
     }
 }
@@ -530,6 +555,8 @@ STDAPI StopService(void)
     HRESULT hr;
     SC_HANDLE manager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     SC_HANDLE service = NULL;
+
+    g_debug("StopService start");
 
     if (!manager) {
         errmsg(E_FAIL, "Failed to open service manager");
@@ -551,5 +578,6 @@ STDAPI StopService(void)
 out:
     CloseServiceHandle(service);
     CloseServiceHandle(manager);
+    g_debug("StopService end");
     return hr;
 }
