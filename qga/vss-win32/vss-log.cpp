@@ -118,7 +118,7 @@ void init_vss_log(void)
     }
 }
 
-void g_win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
+void win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
                        ...)
 {
     va_list ap;
