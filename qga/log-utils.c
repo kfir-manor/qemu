@@ -56,12 +56,9 @@ int glib_log_level_to_system(int level)
 
 void file_log(FILE *log_file, const char *level_str, const gchar *msg)
 {
-    printf("time\n");
     g_autoptr(GDateTime) now = g_date_time_new_now_utc();
     g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
-    printf("open\n");
     fprintf(log_file, "%s: %s: %s\n", nowstr, level_str, msg);
-    printf("flush\n");
     fflush(log_file);
 }
 
