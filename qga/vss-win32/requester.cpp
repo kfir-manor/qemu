@@ -104,9 +104,9 @@ STDAPI requester_init_internal(void)
 STDAPI requester_init(void)
 {
     init_vss_log();
-    g_debug("requester_init start");
+    g_debug("%s %s",__func__,"start");
     HRESULT hr = requester_init_internal();
-    g_debug("requester_init end");
+    g_debug("%s %s",__func__,"end");
     if (hr != S_OK) {
         deinit_vss_log();
     }
@@ -115,7 +115,7 @@ STDAPI requester_init(void)
 
 static void requester_cleanup(void)
 {
-    g_debug("requester_cleanup start");
+    g_debug("%s %s",__func__,"start");
     if (vss_ctx.hEventFrozen) {
         CloseHandle(vss_ctx.hEventFrozen);
         vss_ctx.hEventFrozen = NULL;
@@ -137,12 +137,12 @@ static void requester_cleanup(void)
         vss_ctx.pVssbc = NULL;
     }
     vss_ctx.cFrozenVols = 0;
-    g_debug("requester_cleanup end");
+    g_debug("%s %s",__func__,"end");
 }
 
 STDAPI requester_deinit(void)
 {
-    g_debug("requester_deinit start");
+    g_debug("%s %s",__func__,"start");
     requester_cleanup();
 
     pCreateVssBackupComponents = NULL;
@@ -151,8 +151,8 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
+    g_debug("%s %s",__func__,"end");
     deinit_vss_log();
-    g_debug("requester_deinit end");
     return S_OK;
 }
 
@@ -189,7 +189,7 @@ static void AddComponents(ErrorSet *errset)
     PVSSCOMPONENTINFO info;
     HRESULT hr;
 
-    g_debug("AddComponents start");
+    g_debug("%s %s",__func__,"start");
 
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
@@ -279,7 +279,7 @@ out:
     if (pComponent && info) {
         pComponent->FreeComponentInfo(info);
     }
-    g_debug("AddComponents end");
+    g_debug("%s %s",__func__,"end");
 }
 
 bool is_valid_vss_backup_type(VSS_BACKUP_TYPE vssBT)
@@ -598,9 +598,9 @@ out:
 
 void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
 {
-    g_debug("requester_freeze start");
+    g_debug("%s %s",__func__,"start");
     requester_freeze_internal(num_vols, mountpoints, errset);
-    g_debug("requester_freeze end");
+    g_debug("%s %s",__func__,"end");
 }
 
 void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
@@ -678,7 +678,7 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
 
 void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
 {
-    g_debug("requester_thaw start");
+    g_debug("%s %s",__func__,"start");
     requester_thaw_internal(num_vols, mountpints, errset);
-    g_debug("requester_thaw end");
+    g_debug("%s %s",__func__,"ebd");
 }
