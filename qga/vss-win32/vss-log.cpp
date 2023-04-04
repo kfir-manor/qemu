@@ -109,7 +109,7 @@ void init_vss_log(void)
 
     if (set_tmp_file_path(log_config->log_filepath)) {
         printf("oppening file: %s\n", log_config->log_filepath);
-        FILE *tmp_log_file = open_logfile(log_config->log_filepath);
+        FILE *tmp_log_file = ga_open_logfile(log_config->log_filepath);
         if (!tmp_log_file) {
             printf("unable to open specified log file: %s\n", strerror(errno));
             return;
