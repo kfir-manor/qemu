@@ -309,9 +309,10 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
     level &= G_LOG_LEVEL_MASK;
     if (g_strcmp0(domain, "syslog") == 0) {
 #ifndef _WIN32
-        system_log(level, level_str, msg);
+        syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
 #else
-        win_system_log(s->event_log, level, msg);
+        ReportEvent(s->event_log, glib_log_level_to_system(level),
+                0, 1, NULL, 1, 0, &msg, NULL);
 #endif
     } else if (level & s->log_level) {
         file_log(s->log_file, level_str, msg);

@@ -54,19 +54,6 @@ int glib_log_level_to_system(int level)
     }
 }
 
-#ifndef _WIN32
-void system_log(GLogLevelFlags level, const char *level_str, const gchar *msg)
-{
-    syslog(glib_log_level_to_system(level), "%s: %s", level_str, msg);
-}
-#else
-void win_system_log(HANDLE event_log, GLogLevelFlags level, const gchar *msg)
-{
-    ReportEvent(event_log, glib_log_level_to_system(level),
-                0, 1, NULL, 1, 0, &msg, NULL);
-}
-#endif
-
 void file_log(FILE *log_file, const char *level_str, const gchar *msg)
 {
     printf("time\n");
