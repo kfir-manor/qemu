@@ -331,7 +331,7 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
                    const gchar *msg, gpointer opaque)
 {
     GAState *s = opaque;
-    const char *level_str = log_level_str(level);
+    const char *level_str = ga_log_level_str(level);
 
     if (!ga_logging_enabled(s)) {
         return;
