@@ -194,7 +194,7 @@ static void AddComponents(ErrorSet *errset)
     hr = vss_ctx.pVssbc->GetWriterMetadataCount(&cWriters);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to get writer metadata count");
-        g_win32_error_log_critical(hr, "failed to get writer metadata count");
+        win32_error_log_critical(hr, "failed to get writer metadata count");
         goto out;
     }
 
@@ -203,7 +203,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get writer metadata of %d/%d",
                              i, cWriters);
-            g_win32_error_log_critical(hr,
+            win32_error_log_critical(hr,
                                     "failed to get writer metadata of %d/%d",
                                     i, cWriters);
             goto out;
@@ -214,7 +214,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get identity of writer %d/%d",
                              i, cWriters);
-            g_win32_error_log_critical(hr,
+            win32_error_log_critical(hr,
                                 "failed to get identity of writer %d/%d",
                                 i, cWriters);
             goto out;
@@ -224,7 +224,7 @@ static void AddComponents(ErrorSet *errset)
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to get file counts of %S",
                              bstrWriterName);
-            g_win32_error_log_critical(hr, "failed to get file counts of %S",
+            win32_error_log_critical(hr, "failed to get file counts of %S",
                              bstrWriterName);
             goto out;
         }
@@ -235,7 +235,7 @@ static void AddComponents(ErrorSet *errset)
                 err_set(errset, hr,
                                  "failed to get component %d/%d of %S",
                                  j, cComponents, bstrWriterName);
-                g_win32_error_log_critical(hr,
+                win32_error_log_critical(hr,
                                  "failed to get component %d/%d of %S",
                                  j, cComponents, bstrWriterName);
                 goto out;
@@ -246,7 +246,7 @@ static void AddComponents(ErrorSet *errset)
                 err_set(errset, hr,
                                  "failed to get component info %d/%d of %S",
                                  j, cComponents, bstrWriterName);
-                g_win32_error_log_critical(hr,
+                win32_error_log_critical(hr,
                                  "failed to get component info %d/%d of %S",
                                  j, cComponents, bstrWriterName);
                 goto out;
@@ -260,7 +260,7 @@ static void AddComponents(ErrorSet *errset)
                 if (FAILED(hr)) {
                     err_set(errset, hr, "failed to add component %S(%S)",
                                      info->bstrComponentName, bstrWriterName);
-                    g_win32_error_log_critical(hr,
+                    win32_error_log_critical(hr,
                                     "failed to add component %S(%S)",
                                     info->bstrComponentName, bstrWriterName);
                     goto out;
@@ -341,7 +341,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     if (!vss_ctx.hEventFrozen) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_FROZEN);
-        g_win32_error_log_critical(GetLastError(), "failed to create event %s",
+        win32_error_log_critical(GetLastError(), "failed to create event %s",
                                    EVENT_NAME_FROZEN);
         goto out;
     }
@@ -349,7 +349,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     if (!vss_ctx.hEventThaw) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_THAW);
-        g_win32_error_log_critical(GetLastError(), "failed to create event %s",
+        win32_error_log_critical(GetLastError(), "failed to create event %s",
                                    EVENT_NAME_THAW);
         goto out;
     }
@@ -357,7 +357,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     if (!vss_ctx.hEventTimeout) {
         err_set(errset, GetLastError(), "failed to create event %s",
                 EVENT_NAME_TIMEOUT);
-        g_win32_error_log_critical(GetLastError(), "failed to create event %s",
+        win32_error_log_critical(GetLastError(), "failed to create event %s",
                                    EVENT_NAME_TIMEOUT);
         goto out;
     }
@@ -366,7 +366,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     hr = pCreateVssBackupComponents(&vss_ctx.pVssbc);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to create VSS backup components");
-        g_win32_error_log_critical(hr,
+        win32_error_log_critical(hr,
                                    "failed to create VSS backup components");
         goto out;
     }
@@ -374,14 +374,14 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     hr = vss_ctx.pVssbc->InitializeForBackup();
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to initialize for backup");
-        g_win32_error_log_critical(hr, "failed to initialize for backup");
+        win32_error_log_critical(hr, "failed to initialize for backup");
         goto out;
     }
 
     hr = vss_ctx.pVssbc->SetBackupState(true, true, vss_bt, false);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup state");
-        g_win32_error_log_critical(hr, "failed to set backup state");
+        win32_error_log_critical(hr, "failed to set backup state");
         goto out;
     }
 
@@ -400,7 +400,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to set backup context");
-        g_win32_error_log_critical(hr, "failed to set backup context");
+        win32_error_log_critical(hr, "failed to set backup context");
         goto out;
     }
 
@@ -410,7 +410,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to gather writer metadata");
-        g_win32_error_log_critical(hr, "failed to gather writer metadata");
+        win32_error_log_critical(hr, "failed to gather writer metadata");
         goto out;
     }
 
@@ -422,7 +422,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     hr = vss_ctx.pVssbc->StartSnapshotSet(&guidSnapshotSet);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to start snapshot set");
-        g_win32_error_log_critical(hr, "failed to start snapshot set");
+        win32_error_log_critical(hr, "failed to start snapshot set");
         goto out;
     }
 
@@ -442,7 +442,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
             if (FAILED(hr)) {
                 err_set(errset, hr, "failed to add %S to snapshot set",
                         volume_name_wchar);
-                g_win32_error_log_critical(hr,
+                win32_error_log_critical(hr,
                         "failed to add %S to snapshot set",
                         volume_name_wchar);
                 delete[] volume_name_wchar;
@@ -464,7 +464,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
         volume = FindFirstVolumeW(short_volume_name, sizeof(short_volume_name));
         if (volume == INVALID_HANDLE_VALUE) {
             err_set(errset, hr, "failed to find first volume");
-            g_win32_error_log_critical(hr, "failed to find first volume");
+            win32_error_log_critical(hr, "failed to find first volume");
             goto out;
         }
 
@@ -483,7 +483,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
                     }
                     err_set(errset, hr, "failed to add %S to snapshot set",
                             display_name);
-                    g_win32_error_log_critical(hr,
+                    win32_error_log_critical(hr,
                             "failed to add %S to snapshot set",
                             display_name);
                     FindVolumeClose(volume);
@@ -510,7 +510,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to prepare for backup");
-        g_win32_error_log_critical(hr, "failed to prepare for backup");
+        win32_error_log_critical(hr, "failed to prepare for backup");
         goto out;
     }
 
@@ -520,7 +520,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     }
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to gather writer status");
-        g_win32_error_log_critical(hr, "failed to gather writer status");
+        win32_error_log_critical(hr, "failed to gather writer status");
         goto out;
     }
 
@@ -532,7 +532,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     hr = vss_ctx.pVssbc->DoSnapshotSet(&vss_ctx.pAsyncSnapshot);
     if (FAILED(hr)) {
         err_set(errset, hr, "failed to do snapshot set");
-        g_win32_error_log_critical(hr, "failed to do snapshot set");
+        win32_error_log_critical(hr, "failed to do snapshot set");
         goto out;
     }
 
@@ -541,13 +541,13 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
         HRESULT hr2 = vss_ctx.pAsyncSnapshot->QueryStatus(&hr, NULL);
         if (FAILED(hr2)) {
             err_set(errset, hr, "failed to do snapshot set");
-            g_win32_error_log_critical(hr, "failed to do snapshot set");
+            win32_error_log_critical(hr, "failed to do snapshot set");
             goto out;
         }
         if (hr != VSS_S_ASYNC_PENDING) {
             err_set(errset, E_FAIL,
                     "DoSnapshotSet exited without Frozen event");
-            g_win32_error_log_critical(E_FAIL, 
+            win32_error_log_critical(E_FAIL, 
                                 "DoSnapshotSet exited without Frozen event");
             goto out;
         }
@@ -564,7 +564,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
         /* If we are here, VSS had timeout.
          * Don't call AbortBackup, just return directly.
          */
-        g_win32_error_log_critical(E_FAIL,
+        win32_error_log_critical(E_FAIL,
                 "timeout when try to receive Frozen event from VSS provider");
         goto out1;
     }
@@ -572,7 +572,7 @@ void requester_freeze_internal(int *num_vols, void *mountpoints,
     if (wait_status != WAIT_OBJECT_0) {
         err_set(errset, E_FAIL,
                 "couldn't receive Frozen event from VSS provider");
-        g_win32_error_log_critical(E_FAIL,
+        win32_error_log_critical(E_FAIL,
                 "couldn't receive Frozen event from VSS provider");
         goto out;
     }
@@ -632,7 +632,7 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
         }
         if (FAILED(hr)) {
             err_set(errset, hr, "failed to complete backup");
-            g_win32_error_log_critical(hr, "failed to complete backup");
+            win32_error_log_critical(hr, "failed to complete backup");
         }
         break;
 
@@ -650,7 +650,7 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
     case VSS_E_UNEXPECTED_PROVIDER_ERROR:
         if (WaitForSingleObject(vss_ctx.hEventTimeout, 0) != WAIT_OBJECT_0) {
             err_set(errset, hr, "unexpected error in VSS provider");
-            g_win32_error_log_critical(hr, "unexpected error in VSS provider");
+            win32_error_log_critical(hr, "unexpected error in VSS provider");
             break;
         }
         /* fall through if hEventTimeout is signaled */
@@ -658,13 +658,13 @@ void requester_thaw_internal(int *num_vols, void *mountpints, ErrorSet *errset)
     case (HRESULT)VSS_E_HOLD_WRITES_TIMEOUT:
         err_set(errset, hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
-        g_win32_error_log_critical(hr, "couldn't hold writes: "
+        win32_error_log_critical(hr, "couldn't hold writes: "
                 "fsfreeze is limited up to 10 seconds");
         break;
 
     default:
         err_set(errset, hr, "failed to do snapshot set");
-        g_win32_error_log_critical(hr, "failed to do snapshot set");
+        win32_error_log_critical(hr, "failed to do snapshot set");
     }
     if (err_is_set(errset)) {
         vss_ctx.pVssbc->AbortBackup();
