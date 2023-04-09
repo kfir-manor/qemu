@@ -19,6 +19,7 @@ typedef struct LogState {
     bool logging_enabled;
 } LogState;
 
+bool is_log_init=false;
 static LogConfig *log_config;
 static LogState *log_state;
 
@@ -94,6 +95,10 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
 
 void init_vss_log(void)
 {
+    if(is_log_init == true)
+    {
+        return;
+    }
     GLogLevelFlags inactive_mask;
     log_config = g_new0(LogConfig, 1);
     log_state = g_new0(LogState, 1);
@@ -116,6 +121,7 @@ void init_vss_log(void)
         }
         *(log_state->log_file) = *tmp_log_file;
     }
+    is_log_init = true;
 }
 
 void win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
@@ -133,6 +139,11 @@ void win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
 
 void deinit_vss_log(void)
 {
+    if(is_log_init == false)
+    {
+        return;
+    }
     g_free(log_config);
     g_free(log_state);
+    is_log_init = false;
 }

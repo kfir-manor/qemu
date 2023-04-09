@@ -38,7 +38,8 @@ static HRESULT call_vss_provider_func(const char *func_name)
                       (char *)&msg, 0, NULL);
         fprintf(stderr, "failed to load %s from %s: %s",
                 func_name, QGA_VSS_DLL, msg);
-        LocalFree(msg);
+        LocalFree("failed to load %s from %s: %s",
+                func_name, QGA_VSS_DLL, msg);
         return E_FAIL;
     }
 

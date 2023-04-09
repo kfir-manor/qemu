@@ -246,11 +246,11 @@ STDAPI COMUnregister(void)
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
     g_debug("%s %s",__func__,"end");
+    deinit_vss_log();
     return hr;
 }
-
 /* Register this module to COM+ Applications Catalog */
-STDAPI COMRegister(void)
+STDAPI COMRegister_internal(void)
 {
     HRESULT hr;
     COMInitializer initializer;
@@ -368,15 +368,19 @@ STDAPI COMRegister(void)
 
 out:
     if (unregisterOnFailure && FAILED(hr)) {
-        COMUnregister();
+        COMUnregister_internal();
     }
     g_debug("%s %s",__func__,"end");
     return hr;
 }
 
+STDAPI COMRegister(void){
+    init_vss_log();
+    COMRegister_internal()
+}
+
 STDAPI_(void) CALLBACK DLLCOMRegister(HWND, HINSTANCE, LPSTR, int)
 {
-    init_vss_log();
     COMRegister();
     deinit_vss_log();
 }
@@ -385,7 +389,6 @@ STDAPI_(void) CALLBACK DLLCOMUnregister(HWND, HINSTANCE, LPSTR, int)
 {
     init_vss_log();
     COMUnregister();
-    deinit_vss_log();
 }
 
 static BOOL CreateRegistryKey(LPCTSTR key, LPCTSTR value, LPCTSTR data)
