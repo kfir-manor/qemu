@@ -16,11 +16,22 @@ typedef struct LogConfig {
 
 typedef struct LogState {
     FILE *log_file;
+    bool logging_enabled;
 } LogState;
 
 bool is_log_init;
 static LogConfig *log_config;
 static LogState *log_state;
+
+void disable_log(void)
+{
+    log_state->logging_enabled = false;
+}
+
+void enable_log(void)
+{
+    log_state->logging_enabled = true;
+}
 
 DWORD get_log_level(void)
 {
@@ -69,6 +80,9 @@ void active_vss_log(const gchar *log_domain, GLogLevelFlags log_level,
                     const gchar *message, gpointer user_data)
 {
     LogState *s = (LogState *)user_data;
+    if (!s->logging_enabled) {
+        return;
+    }
     const char *level_str = ga_log_level_str(log_level);
     file_log(s->log_file, level_str, message);
 }
