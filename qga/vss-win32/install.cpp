@@ -24,6 +24,7 @@
 #include <comutil.h>
 #include <sddl.h>
 #include <winsvc.h>
+#include <vss-log.h>
 
 #define BUFFER_SIZE 1024
 
@@ -233,6 +234,7 @@ STDAPI COMUnregister(void)
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
+    deinit_vss_log();
     return hr;
 }
 
@@ -255,6 +257,8 @@ STDAPI COMRegister(void)
     wchar_t buffer[BUFFER_SIZE];
     const wchar_t *administratorsGroupSID = L"S-1-5-32-544";
     const wchar_t *systemUserSID = L"S-1-5-18";
+
+    init_vss_log();
 
     if (!g_hinstDll) {
         hr = E_FAIL;
@@ -354,18 +358,26 @@ STDAPI COMRegister(void)
 out:
     if (unregisterOnFailure && FAILED(hr)) {
         COMUnregister();
+    } else if (FAILED(hr)) {
+        deinit_vss_log();
+<<<<<<< HEAD
+    } 
+=======
     }
-
+    g_debug("%s %s", __func__, "end");
+>>>>>>> 23ee34de1a6 (-qga-win-vss-add-log-to-requester-and-install fix)
     return hr;
 }
 
 STDAPI_(void) CALLBACK DLLCOMRegister(HWND, HINSTANCE, LPSTR, int)
 {
     COMRegister();
+    deinit_vss_log();
 }
 
 STDAPI_(void) CALLBACK DLLCOMUnregister(HWND, HINSTANCE, LPSTR, int)
 {
+    init_vss_log();
     COMUnregister();
 }
 
