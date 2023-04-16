@@ -149,9 +149,13 @@ void win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
     g_log(G_LOG_DOMAIN, log_level, "%s: %s", msg, suffix);
     g_free(suffix);
     va_end(ap);
+<<<<<<< HEAD
 }
 >>>>>>> ad86a7c5052 (qga-win-vss-add-glib-log-handler fix)
 =======
     is_log_init = false;
 }
 >>>>>>> ce0fcdd51b0 (qga/win/vss: add log init flag)
+=======
+}
+>>>>>>> 5efa3540ae6 (qga/win/vss: add win32 error log)
