@@ -481,6 +481,11 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
         if (hr != VSS_S_ASYNC_PENDING) {
             err_set(errset, E_FAIL,
                     "DoSnapshotSet exited without Frozen event");
+<<<<<<< HEAD
+=======
+            win32_error_log_critical(E_FAIL,
+                                "DoSnapshotSet exited without Frozen event");
+>>>>>>> 08d69decb59 (qga-win-vss-add-critical-glib-log-to-requester fix)
             goto out;
         }
         wait_status = WaitForSingleObject(vss_ctx.hEventFrozen,
@@ -510,7 +515,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-
+    disable_log();
     return;
 
 out:
@@ -544,6 +549,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     assert(vss_ctx.pAsyncSnapshot);
 
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
+    enable_log();
     switch (hr) {
     case VSS_S_ASYNC_FINISHED:
         hr = vss_ctx.pVssbc->BackupComplete(pAsync.replace());
