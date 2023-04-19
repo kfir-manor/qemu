@@ -1,0 +1,9 @@
+diff a/qga/vss-win32/install.cpp b/qga/vss-win32/install.cpp	(rejected hunks)
+@@ -366,6 +376,7 @@ out:
+     } else if (FAILED(hr)) {
+         deinit_vss_log();
+     } 
++    g_debug("%s %s",__func__,"end");
+     return hr;
+ }
+ 
