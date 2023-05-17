@@ -1,0 +1,35 @@
+diff a/qga/vss-win32/install.cpp b/qga/vss-win32/install.cpp	(rejected hunks)
+@@ -220,11 +226,12 @@ static HRESULT QGAProviderCount(ICatalogCollection *coll, int i, void *arg)
+ static HRESULT QGAProviderRemove(ICatalogCollection *coll, int i, void *arg)
+ {
+     HRESULT hr;
+-
++    g_debug("%s %s", __func__, "start");
+     fprintf(stderr, "Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
+     g_info("Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
+     chk(coll->Remove(i));
+ out:
++    g_debug("%s %s", __func__, "end");
+     return hr;
+ }
+ 
+@@ -233,9 +240,11 @@ STDAPI COMUnregister(void)
+ {
+     HRESULT hr;
+ 
++    g_debug("%s %s", __func__, "start");
+     DllUnregisterServer();
+     chk(QGAProviderFind(QGAProviderRemove, NULL));
+ out:
++    g_debug("%s %s", __func__, "end");
+     deinit_vss_log();
+     return hr;
+ }
+@@ -261,6 +270,7 @@ STDAPI COMRegister(void)
+     const wchar_t *systemUserSID = L"S-1-5-18";
+ 
+     init_vss_log();
++    g_debug("%s %s", __func__, "start");
+ 
+     if (!g_hinstDll) {
+         hr = E_FAIL;
