@@ -3,3 +3,5 @@
 
 void init_vss_log(void);
 void deinit_vss_log(void);
+void disable_log(void);
+void enable_log(void);
