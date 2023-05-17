@@ -37,6 +37,7 @@
 #include "qga/vss-win32.h"
 #endif
 #include "commands-common.h"
+#include "log-utils.h"
 
 #ifndef _WIN32
 #ifdef CONFIG_BSD
@@ -278,26 +279,6 @@ QEMU_HELP_BOTTOM "\n"
     dfl_pathnames.state_dir);
 }
 
-static const char *ga_log_level_str(GLogLevelFlags level)
-{
-    switch (level & G_LOG_LEVEL_MASK) {
-    case G_LOG_LEVEL_ERROR:
-        return "error";
-    case G_LOG_LEVEL_CRITICAL:
-        return "critical";
-    case G_LOG_LEVEL_WARNING:
-        return "warning";
-    case G_LOG_LEVEL_MESSAGE:
-        return "message";
-    case G_LOG_LEVEL_INFO:
-        return "info";
-    case G_LOG_LEVEL_DEBUG:
-        return "debug";
-    default:
-        return "user";
-    }
-}
-
 bool ga_logging_enabled(GAState *s)
 {
     return s->logging_enabled;
@@ -364,29 +345,13 @@ static void ga_log(const gchar *domain, GLogLevelFlags level,
                     0, 1, NULL, 1, 0, &msg, NULL);
 #endif
     } else if (level & s->log_level) {
-        g_autoptr(GDateTime) now = g_date_time_new_now_utc();
-        g_autofree char *nowstr = g_date_time_format(now, "%s.%f");
-        fprintf(s->log_file, "%s: %s: %s\n", nowstr, level_str, msg);
-        fflush(s->log_file);
+        file_log(s->log_file, level_str, msg);
     }
 }
 
 void ga_set_response_delimited(GAState *s)
 {
     s->delimit_response = true;
-}
-
-static FILE *ga_open_logfile(const char *logfile)
-{
-    FILE *f;
-
-    f = fopen(logfile, "a");
-    if (!f) {
-        return NULL;
-    }
-
-    qemu_set_cloexec(fileno(f));
-    return f;
 }
 
 static gint ga_strcmp(gconstpointer str1, gconstpointer str2)
