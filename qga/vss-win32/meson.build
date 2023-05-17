@@ -15,6 +15,7 @@ qga_vss = shared_module(
   dependencies: [
     glib,
     socket,
+    qemuutil,
     cc.find_library('ole32'),
     cc.find_library('oleaut32'),
     cc.find_library('shlwapi'),
