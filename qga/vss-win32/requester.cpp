@@ -510,7 +510,7 @@ void requester_freeze(int *num_vols, void *mountpoints, ErrorSet *errset)
     } else {
         *num_vols = vss_ctx.cFrozenVols = num_fixed_drives;
     }
-
+    disable_log();
     return;
 
 out:
@@ -544,6 +544,7 @@ void requester_thaw(int *num_vols, void *mountpints, ErrorSet *errset)
     assert(vss_ctx.pAsyncSnapshot);
 
     HRESULT hr = WaitForAsync(vss_ctx.pAsyncSnapshot);
+    enable_log();
     switch (hr) {
     case VSS_S_ASYNC_FINISHED:
         hr = vss_ctx.pVssbc->BackupComplete(pAsync.replace());
