@@ -55,7 +55,7 @@ void errmsg(DWORD err, const char *text)
                   FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                   NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                   (char *)&msg, 0, NULL);
-    fprintf(stderr, "%.*s. (Error: %lx) %s\n", len, text, err, msg);
+    g_critical("%.*s. (Error: %lx) %s\n", len, text, err, msg);
     LocalFree(msg);
 }
 
@@ -220,7 +220,7 @@ static HRESULT QGAProviderRemove(ICatalogCollection *coll, int i, void *arg)
 {
     HRESULT hr;
 
-    fprintf(stderr, "Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
+    g_info("Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
     chk(coll->Remove(i));
 out:
     return hr;
@@ -230,7 +230,7 @@ out:
 STDAPI COMUnregister(void)
 {
     HRESULT hr;
-
+    enable_console_msg();
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
@@ -259,6 +259,7 @@ STDAPI COMRegister(void)
     const wchar_t *systemUserSID = L"S-1-5-18";
 
     init_vss_log();
+    enable_console_msg();
 
     if (!g_hinstDll) {
         hr = E_FAIL;
@@ -310,9 +311,9 @@ STDAPI COMRegister(void)
     }
     strcpy(tlbPath, dllPath);
     strcpy(tlbPath+n-3, "tlb");
-    fprintf(stderr, "Registering " QGA_PROVIDER_NAME ":\n");
-    fprintf(stderr, "  %s\n", dllPath);
-    fprintf(stderr, "  %s\n", tlbPath);
+    g_info("Registering " QGA_PROVIDER_NAME ":\n");
+    g_info("  %s\n", dllPath);
+    g_info("  %s\n", tlbPath);
     if (!PathFileExists(tlbPath)) {
         hr = HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
         errmsg(hr, "Failed to lookup tlb");
@@ -356,6 +357,7 @@ STDAPI COMRegister(void)
     chk(pUsersInRole->SaveChanges(&n));
 
 out:
+    disable_console_msg();
     if (unregisterOnFailure && FAILED(hr)) {
         COMUnregister();
     } else if (FAILED(hr)) {
@@ -526,7 +528,7 @@ namespace _com_util
         }
 
         if (mbstowcs(bstr, ascii, len) == (size_t)-1) {
-            fprintf(stderr, "Failed to convert string '%s' into BSTR", ascii);
+            g_warning("Failed to convert string '%s' into BSTR", ascii);
             bstr[0] = 0;
         }
         return bstr;
