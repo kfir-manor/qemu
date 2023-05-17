@@ -257,14 +257,16 @@ STDAPI COMRegister(void)
     const wchar_t *systemUserSID = L"S-1-5-18";
 
     if (!g_hinstDll) {
-        errmsg(E_FAIL, "Failed to initialize DLL");
-        return E_FAIL;
+        hr = E_FAIL;
+        errmsg(hr, "Failed to initialize DLL");
+        goto out;
     }
 
     chk(QGAProviderFind(QGAProviderCount, (void *)&count));
     if (count) {
-        errmsg(E_ABORT, "QGA VSS Provider is already installed");
-        return E_ABORT;
+        hr = E_ABORT;
+        errmsg(hr, "QGA VSS Provider is already installed");
+        goto out;
     }
 
     chk(CoCreateInstance(CLSID_COMAdminCatalog, NULL, CLSCTX_INPROC_SERVER,
