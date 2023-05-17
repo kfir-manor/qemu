@@ -36,6 +36,6 @@ FILE *ga_open_logfile(const char *logfile)
     if (!f) {
         return NULL;
     }
-    qemu_set_cloexec(fileno(f));
+    fileno(f);
     return f;
 }
