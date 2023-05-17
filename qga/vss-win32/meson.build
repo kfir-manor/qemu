@@ -7,7 +7,7 @@ link_args = cc.get_supported_link_arguments([
 
 qga_vss = shared_module(
   'qga-vss',
-  ['requester.cpp', 'provider.cpp', 'install.cpp', 'registry.cpp', genh],
+  ['requester.cpp', 'provider.cpp', 'install.cpp', 'registry.cpp', 'vss-log.cpp', '../log-utils.c', genh],
   name_prefix: '',
   cpp_args: ['-Wno-unknown-pragmas', '-Wno-delete-non-virtual-dtor', '-Wno-non-virtual-dtor'],
   link_args: link_args,
@@ -15,6 +15,7 @@ qga_vss = shared_module(
   dependencies: [
     glib,
     socket,
+    qemuutil,
     cc.find_library('ole32'),
     cc.find_library('oleaut32'),
     cc.find_library('shlwapi'),
