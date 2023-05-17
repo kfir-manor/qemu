@@ -118,3 +118,16 @@ void deinit_vss_log(void)
     g_free(log_state);
     is_log_init = false;
 }
+
+void win32_error_log(int win32_err, GLogLevelFlags log_level, const char *fmt,
+                     ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    char *msg = g_strdup_vprintf(fmt, ap);
+    va_end(ap);
+    char *suffix = g_win32_error_message(win32_err);
+    g_log(G_LOG_DOMAIN, log_level, "%s: %s", msg, suffix);
+    g_free(suffix);
+    g_free(msg);
+}
