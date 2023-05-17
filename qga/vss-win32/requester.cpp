@@ -17,7 +17,7 @@
 #include <vswriter.h>
 #include <vsbackup.h>
 #include "registry.h"
-
+#include "vss-log.h"
 /* Max wait time for frozen event (VSS can only hold writes for 10 seconds) */
 #define VSS_TIMEOUT_FREEZE_MSEC 60000
 
@@ -53,7 +53,7 @@ static struct QGAVSSContext {
     int cFrozenVols;               /* number of frozen volumes */
 } vss_ctx;
 
-STDAPI requester_init(void)
+STDAPI requester_init_internal(void)
 {
     COMInitializer initializer; /* to call CoInitializeSecurity */
     HRESULT hr = CoInitializeSecurity(
@@ -93,6 +93,16 @@ STDAPI requester_init(void)
     return S_OK;
 }
 
+STDAPI requester_init(void)
+{
+    init_vss_log();
+    HRESULT hr = requester_init_internal();
+    if (hr != S_OK) {
+        deinit_vss_log();
+    }
+    return hr;
+}
+
 static void requester_cleanup(void)
 {
     if (vss_ctx.hEventFrozen) {
@@ -128,7 +138,7 @@ STDAPI requester_deinit(void)
         FreeLibrary(hLib);
         hLib = NULL;
     }
-
+    deinit_vss_log();
     return S_OK;
 }
 
