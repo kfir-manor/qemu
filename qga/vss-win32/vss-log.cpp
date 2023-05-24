@@ -92,6 +92,7 @@ void vss_log(const gchar *log_domain, GLogLevelFlags log_level,
     if (!s->logging_enabled) {
         return;
     }
+    
     const char *level_str = ga_log_level_str(log_level);
     file_log(s->log_file, level_str, "this is sparta");
     if (s->console_msg_enabled) {
@@ -107,23 +108,32 @@ void init_vss_log(void)
     {
         return;
     }
+    fprintf(stderr,"im 1");
     log_config = g_new0(LogConfig, 1);
     log_state = g_new0(LogState, 1);
     log_state->logging_enabled = true;
+    fprintf(stderr, "im 2");
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     log_state->console_msg_enabled = true;
+    fprintf(stderr, "im 3");
     g_log_set_handler(G_LOG_DOMAIN, G_LOG_LEVEL_MASK, vss_log,
                           log_state);
+    fprintf(stderr, "im 4");
     if (set_tmp_file_path(log_config->log_filepath)) {
+        fprintf(stderr, "im 5");
         printf("oppening file: %s\n", log_config->log_filepath);
         FILE *tmp_log_file = ga_open_logfile(log_config->log_filepath);
+        fprintf(stderr, "im 6");
         if (!tmp_log_file) {
+            fprintf(stderr, "im 6.5");
             printf("unable to open specified log file: %s\n", strerror(errno));
             return;
         }
         *(log_state->log_file) = *tmp_log_file;
+        fprintf(stderr, "im 7");
     }
+    fprintf(stderr, "im 8");
     is_log_init = true;
 }
 
