@@ -130,7 +130,7 @@ void init_vss_log(void)
             printf("unable to open specified log file: %s\n", strerror(errno));
             return;
         }
-        *(log_state->log_file) = *tmp_log_file;
+        &(log_state->log_file) = *tmp_log_file;
         fprintf(stderr, "im 7");
     }
     fprintf(stderr, "im 8");
