@@ -112,7 +112,7 @@ void init_vss_log(void)
     log_state->logging_enabled = true;
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
-    s->console_msg_enabled=true
+    log_state->console_msg_enabled = true;
     g_log_set_handler(G_LOG_DOMAIN, G_LOG_LEVEL_MASK, vss_log,
                           log_state);
     if (set_tmp_file_path(log_config->log_filepath)) {
