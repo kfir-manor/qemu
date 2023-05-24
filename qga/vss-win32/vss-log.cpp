@@ -92,8 +92,8 @@ void vss_log(const gchar *log_domain, GLogLevelFlags log_level,
     if (!s->logging_enabled) {
         return;
     }
-    file_log(s->log_file, level_str, "this is sparta");
     const char *level_str = ga_log_level_str(log_level);
+    file_log(s->log_file, level_str, "this is sparta");
     if (s->console_msg_enabled) {
         file_log(stdout, level_str, message);
         file_log(stderr, level_str, message);
