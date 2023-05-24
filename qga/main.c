@@ -1479,7 +1479,7 @@ int main(int argc, char **argv)
     init_dfl_pathnames();
     config_load(config);
     config_parse(config, argc, argv);
-
+    g_debug("im here in main")
     if (config->pid_filepath == NULL) {
         config->pid_filepath = g_strdup(dfl_pathnames.pidfile);
     }
