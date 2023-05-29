@@ -133,7 +133,9 @@ void init_vss_log(void)
         log_state->log_file = tmp_log_file;
         fprintf(stderr, "im 7");
     }
+    enable_console_msg();
     fprintf(stderr, "im 8");
+    disable_console_msg();
     is_log_init = true;
 }
 
