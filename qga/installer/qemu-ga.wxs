@@ -126,6 +126,10 @@
                          Key="System\CurrentControlSet\Services\QEMU Guest Agent VSS Provider">
               <RegistryValue Type="integer" Name="VssOption" Value="1" />
             </RegistryKey>
+            <RegistryKey Root="HKLM"
+                         Key="System\CurrentControlSet\Services\QEMU Guest Agent VSS Provider">
+              <RegistryValue Type="integer" Name="LogLevel" Value="3" />
+            </RegistryKey>
           </Component>
         </Directory>
       </Directory>
