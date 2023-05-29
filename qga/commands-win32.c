@@ -2031,7 +2031,7 @@ GList *ga_command_init_blockedrpcs(GList *blockedrpcs)
 /* register init/cleanup routines for stateful command groups */
 void ga_command_state_init(GAState *s, GACommandState *cs)
 {
-    if (!vsbs_initialized()) {
+    if (!vss_initialized()) {
         ga_command_state_add(cs, NULL, guest_fsfreeze_cleanup);
     }
 }
