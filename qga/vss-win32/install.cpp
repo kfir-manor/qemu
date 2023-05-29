@@ -368,13 +368,14 @@ STDAPI COMRegister(void)
     chk(pUsersInRole->SaveChanges(&n));
 
 out:
-    disable_console_msg();
     if (unregisterOnFailure && FAILED(hr)) {
         COMUnregister();
     } else if (FAILED(hr)) {
         deinit_vss_log();
+    } else {
+        g_debug("%s %s", __func__, "end");
+        disable_console_msg();
     }
-    g_debug("%s %s", __func__, "end");
     return hr;
 }
 
