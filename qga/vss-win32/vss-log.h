@@ -5,6 +5,8 @@ void init_vss_log(void);
 void deinit_vss_log(void);
 void disable_log(void);
 void enable_log(void);
+void disable_stderr_log(void);
+void enable_stderr_log(void);
 #define win32_error_log_critical(win32_err, fmt, ...) \
     win32_error_log((win32_err), G_LOG_LEVEL_CRITICAL, (fmt), ##__VA_ARGS__)
 #define win32_error_log_warning(win32_err, fmt, ...) \
