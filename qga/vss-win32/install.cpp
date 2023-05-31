@@ -108,6 +108,7 @@ static HRESULT GetAdminName(_bstr_t *name)
     ULONG returned;
     _variant_t var;
 
+    g_debug("%s %s", __func__, "start");
     chk(CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER,
                          IID_IWbemLocator, (LPVOID *)pLoc.replace()));
     chk(pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"), NULL, NULL, NULL,
@@ -142,6 +143,7 @@ static HRESULT GetAdminName(_bstr_t *name)
     }
 
 out:
+    g_debug("%s %s", __func__, "end");
     return hr;
 }
 
@@ -155,6 +157,7 @@ static HRESULT getNameByStringSID(
     DWORD domainNameLen = BUFFER_SIZE;
     wchar_t domainName[BUFFER_SIZE];
 
+    g_debug("%s %s", __func__, "start");
     if (!ConvertStringSidToSidW(sid, &psid)) {
         hr = HRESULT_FROM_WIN32(GetLastError());
         goto out;
@@ -168,6 +171,7 @@ static HRESULT getNameByStringSID(
     LocalFree(psid);
 
 out:
+    g_debug("%s %s", __func__, "end");
     return hr;
 }
 
@@ -184,6 +188,7 @@ static HRESULT QGAProviderFind(
     _variant_t var;
     long i, n;
 
+    g_debug("%s %s", __func__, "start");
     chk(CoCreateInstance(CLSID_COMAdminCatalog, NULL, CLSCTX_INPROC_SERVER,
                          IID_IUnknown, (void **)pUnknown.replace()));
     chk(pUnknown->QueryInterface(IID_ICOMAdminCatalog2,
@@ -205,6 +210,7 @@ static HRESULT QGAProviderFind(
     chk(pColl->SaveChanges(&n));
 
 out:
+    g_debug("%s %s", __func__, "end");
     return hr;
 }
 
@@ -220,9 +226,11 @@ static HRESULT QGAProviderRemove(ICatalogCollection *coll, int i, void *arg)
 {
     HRESULT hr;
 
+    g_debug("%s %s", __func__, "start");
     g_info("Removing COM+ Application: %s\n", QGA_PROVIDER_NAME);
     chk(coll->Remove(i));
 out:
+    g_debug("%s %s", __func__, "end");
     return hr;
 }
 
@@ -231,9 +239,11 @@ STDAPI COMUnregister(void)
 {
     HRESULT hr;
     enable_stderr_log();
+    g_debug("%s %s", __func__, "start");
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
 out:
+    g_debug("%s %s", __func__, "end");
     deinit_vss_log();
     return hr;
 }
@@ -260,6 +270,7 @@ STDAPI COMRegister(void)
 
     init_vss_log();
     enable_stderr_log();
+    g_debug("%s %s", __func__, "start");
 
     if (!g_hinstDll) {
         hr = E_FAIL;
@@ -362,6 +373,7 @@ out:
     } else if (FAILED(hr)) {
         deinit_vss_log();
     } else {
+        g_debug("%s %s", __func__, "end");
         disable_stderr_log();
     }
     return hr;
@@ -500,6 +512,7 @@ STDAPI DllUnregisterServer(void)
     COMInitializer initializer;
     COMPointer<IVssAdmin> pVssAdmin;
 
+    g_debug("%s %s", __func__, "start");
     HRESULT hr = CoCreateInstance(CLSID_VSSCoordinator,
                                   NULL, CLSCTX_ALL, IID_IVssAdmin,
                                   (void **)pVssAdmin.replace());
@@ -512,6 +525,7 @@ STDAPI DllUnregisterServer(void)
     sprintf(key, "CLSID\\%s", g_szClsid);
     SHDeleteKey(HKEY_CLASSES_ROOT, key);
     SHDeleteKey(HKEY_CLASSES_ROOT, g_szProgid);
+    g_debug("%s %s", __func__, "end");
 
     return S_OK; /* Uninstall should never fail */
 }
@@ -521,6 +535,7 @@ STDAPI DllUnregisterServer(void)
 namespace _com_util
 {
     BSTR WINAPI ConvertStringToBSTR(const char *ascii) {
+        g_debug("%s %s", __func__, "start");
         int len = strlen(ascii);
         BSTR bstr = SysAllocStringLen(NULL, len);
 
@@ -532,6 +547,7 @@ namespace _com_util
             g_warning("Failed to convert string '%s' into BSTR", ascii);
             bstr[0] = 0;
         }
+        g_debug("%s %s", __func__, "end");
         return bstr;
     }
 }
@@ -543,6 +559,7 @@ STDAPI StopService(void)
     SC_HANDLE manager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     SC_HANDLE service = NULL;
 
+    g_debug("%s %s", __func__, "start");
     if (!manager) {
         errmsg(E_FAIL, "Failed to open service manager");
         hr = E_FAIL;
@@ -563,5 +580,6 @@ STDAPI StopService(void)
 out:
     CloseServiceHandle(service);
     CloseServiceHandle(manager);
+    g_debug("%s %s", __func__, "end");
     return hr;
 }
