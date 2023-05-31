@@ -135,6 +135,7 @@ void init_vss_log(void)
     }
     enable_console_msg();
     g_info("im 8");
+    g_info("im 9");
     disable_console_msg();
     is_log_init = true;
 }
