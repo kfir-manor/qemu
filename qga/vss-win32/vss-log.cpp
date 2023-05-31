@@ -108,25 +108,25 @@ void init_vss_log(void)
     {
         return;
     }
-    g_log("im 1");
+    g_info("im 1");
     log_config = g_new0(LogConfig, 1);
     log_state = g_new0(LogState, 1);
     log_state->logging_enabled = true;
-    g_log("im 2");
+    g_info("im 2");
     log_state->log_file = stderr;
     log_config->log_level_mask = get_log_level_mask();
     log_state->console_msg_enabled = true;
-    g_log("im 3");
+    g_info("im 3");
     g_log_set_handler(G_LOG_DOMAIN, G_LOG_LEVEL_MASK, vss_log,
                           log_state);
-    g_log("im 4");
+    g_info("im 4");
     if (set_tmp_file_path(log_config->log_filepath)) {
-        fprintf(stderr, "im 5");
+        g_info("im 5");
         printf("oppening file: %s\n", log_config->log_filepath);
         FILE *tmp_log_file = ga_open_logfile(log_config->log_filepath);
-        g_log( "im 6");
+        g_info("im 6");
         if (!tmp_log_file) {
-            g_log( "im 6.5");
+            g_info( "im 6.5");
             printf("unable to open specified log file: %s\n", strerror(errno));
             return;
         }
@@ -134,7 +134,7 @@ void init_vss_log(void)
         fprintf(stderr, "im 7");
     }
     enable_console_msg();
-    g_log("im 8");
+    g_info("im 8");
     disable_console_msg();
     is_log_init = true;
 }
