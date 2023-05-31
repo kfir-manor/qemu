@@ -59,7 +59,7 @@ STDAPI requester_init_internal(void)
     HRESULT hr = CoInitializeSecurity(
         NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY,
         RPC_C_IMP_LEVEL_IDENTIFY, NULL, EOAC_NONE, NULL);
-    enable_console_msg();
+    enable_stderr_log();
 
     if (FAILED(hr)) {
         g_critical("failed to CoInitializeSecurity (error %lx)\n", hr);
@@ -92,7 +92,7 @@ STDAPI requester_init_internal(void)
         return HRESULT_FROM_WIN32(GetLastError());
     }
     
-    disable_console_msg();
+    disable_stderr_log();
     return S_OK;
 }
 

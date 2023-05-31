@@ -238,7 +238,7 @@ out:
 STDAPI COMUnregister(void)
 {
     HRESULT hr;
-    enable_console_msg();
+    enable_stderr_log();
     g_debug("%s %s", __func__, "start");
     DllUnregisterServer();
     chk(QGAProviderFind(QGAProviderRemove, NULL));
@@ -269,7 +269,7 @@ STDAPI COMRegister(void)
     const wchar_t *systemUserSID = L"S-1-5-18";
 
     init_vss_log();
-    enable_console_msg();
+    enable_stderr_log();
     g_debug("%s %s", __func__, "start");
 
     if (!g_hinstDll) {
@@ -374,7 +374,7 @@ out:
         deinit_vss_log();
     } else {
         g_debug("%s %s", __func__, "end");
-        disable_console_msg();
+        disable_stderr_log();
     }
     return hr;
 }
